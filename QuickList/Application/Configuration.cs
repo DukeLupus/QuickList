@@ -59,6 +59,11 @@ namespace Sander.QuickList.Application
 
 		internal Status Status { get; set; }
 
+		/// <summary>
+		/// How many threads to run at once for file reader?
+		/// </summary>
+		internal int FileReaderParallelism { get; set; }
+
 
 		internal static Configuration Parse(string iniFile)
 		{
@@ -68,13 +73,16 @@ namespace Sander.QuickList.Application
 				HeaderFile = IniReader.ReadValue("ListMagic", "HeaderFile", iniFile),
 				Trigger = IniReader.ReadValue("ListMagic", "trigger", iniFile),
 				OutputFolder = IniReader.ReadValue("ListMagic", "ListLocation", iniFile),
-				ShowUi = IniReader.ReadValue("ListMagic", "Auto", iniFile) == "N",
+				ShowUi = string.Compare(IniReader.ReadValue("ListMagic", "Auto", iniFile, "Y").Trim(), "N", StringComparison.OrdinalIgnoreCase) == 0,
 				ListName = Path.GetFileNameWithoutExtension(iniFile),
 				FileInfo = (FileInfoLevel)Enum.Parse(typeof(FileInfoLevel), IniReader.ReadValue("QuickList", "FileInfo", iniFile, nameof(FileInfoLevel.Size))),
 				FolderHandling = (FolderHandling)Enum.Parse(typeof(FolderHandling),
 					IniReader.ReadValue("QuickList", "FolderHandling", iniFile, nameof(FolderHandling.PartialFolders))),
 				ForceShellMedia = IniReader.ReadValue("QuickList", "ForceShellMedia", iniFile, "0") == "1"
 			};
+
+			int.TryParse(IniReader.ReadValue("QuickList", "FileReaderParallelism", "0"), out var fileReaderParallelism);
+			configuration.FileReaderParallelism = fileReaderParallelism <= 0 ? Environment.ProcessorCount : fileReaderParallelism;
 
 			var dirsFile = IniReader.ReadValue("ListMagic", "DirsFile", iniFile);
 
@@ -113,6 +121,7 @@ namespace Sander.QuickList.Application
 			IniReader.WriteValue("QuickList", "FolderHandling", FolderHandling.ToString(), IniFile);
 			IniReader.WriteValue("QuickList", "FileInfo", FileInfo.ToString(), IniFile);
 			IniReader.WriteValue("QuickList", "ForceShellMedia", ForceShellMedia ? "1" : "0", IniFile);
+			IniReader.WriteValue("QuickList", "FileReaderParallelism", FileReaderParallelism.ToString() , IniFile);
 		}
 	}
 }

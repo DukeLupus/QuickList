@@ -135,7 +135,7 @@ namespace Sander.QuickList.Application
 						if (!findData.cFileName.Equals(".", StringComparison.OrdinalIgnoreCase) && !findData.cFileName.Equals("..",
 								StringComparison.OrdinalIgnoreCase))
 						{
-							var fullPath = string.Concat(path, "\\", findData.cFileName);;
+							var fullPath = string.Concat(path, "\\", findData.cFileName);
 							// Check if this is a directory and not a symbolic link since symbolic links could lead to repeated files and folders as well as infinite loops.
 							if (findData.dwFileAttributes.HasFlag(FileAttributes.Directory) && !findData.dwFileAttributes.HasFlag(FileAttributes.ReparsePoint))
 							{
@@ -166,7 +166,7 @@ namespace Sander.QuickList.Application
 		}
 
 
-		private static List<Entry> ParallelFindNextFile(string path)
+		private List<Entry> ParallelFindNextFile(string path)
 		{
 			var fileList = new ConcurrentBag<Entry>();
 			var directoryList = new List<string>(32);
@@ -199,7 +199,7 @@ namespace Sander.QuickList.Application
 
 					directoryList
 						.AsParallel()
-						.WithDegreeOfParallelism(Environment.ProcessorCount)
+						.WithDegreeOfParallelism(_configuration.FileReaderParallelism)
 						.WithExecutionMode(ParallelExecutionMode.ForceParallelism)
 						.ForAll(x =>
 								{

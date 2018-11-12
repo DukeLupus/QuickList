@@ -57,9 +57,10 @@ namespace Sander.QuickList
 				InputFolders = new List<string> { @"c:\temp\", @"C:\Dev" },
 				OutputFolder = @"c:\temp\out",
 				ListName = "audio",
-				IniFile = @"D:\mIRC\OmenServe\ListMagic\testaudio\testaudio.ini",
+				IniFile = @"c:\temp\out\testaudio.ini",
 				ShowUi = true,
-				ForceShellMedia = false
+				ForceShellMedia = false,
+				FileReaderParallelism = 1
 			};
 #endif
 			configuration.Validate();
