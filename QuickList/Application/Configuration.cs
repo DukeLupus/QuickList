@@ -81,8 +81,8 @@ namespace Sander.QuickList.Application
 				ForceShellMedia = IniReader.ReadValue("QuickList", "ForceShellMedia", iniFile, "0") == "1"
 			};
 
-			int.TryParse(IniReader.ReadValue("QuickList", "FileReaderParallelism", "0"), out var fileReaderParallelism);
-			configuration.FileReaderParallelism = fileReaderParallelism <= 0 ? Environment.ProcessorCount : fileReaderParallelism;
+			int.TryParse(IniReader.ReadValue("QuickList", "FileReaderParallelism", "1"), out var fileReaderParallelism);
+			configuration.FileReaderParallelism = fileReaderParallelism;
 
 			var dirsFile = IniReader.ReadValue("ListMagic", "DirsFile", iniFile);
 

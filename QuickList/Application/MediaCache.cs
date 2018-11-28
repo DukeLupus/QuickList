@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Sander.QuickList.Application
 	internal sealed class MediaCache
 	{
 		private readonly Configuration _configuration;
-		private readonly List<Entry> _newCache = new List<Entry>();
+		private readonly ConcurrentBag<Entry> _newCache = new ConcurrentBag<Entry>();
 		private Dictionary<string, Entry> _mediaCache;
 
 

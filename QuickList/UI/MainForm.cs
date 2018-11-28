@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Sander.QuickList.Application;
@@ -73,7 +72,11 @@ namespace Sander.QuickList.UI
 
 		private void Disable(Control control)
 		{
-			control.Enabled = false;
+			if (control is Label || control.Name == "CurrentListPanel")
+				return;
+
+			if (control != this)
+				control.Enabled = false;
 			foreach (Control child in control.Controls)
 			{
 				Disable(child);

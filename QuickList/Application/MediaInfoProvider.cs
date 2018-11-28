@@ -60,7 +60,12 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 				timer.Elapsed += (sender, args) => _configuration.Status = Status.Get("Getting media info", percentage);
 			}
 
-			entries.ForEach(entry =>
+			entries
+				.AsParallel()
+				.WithDegreeOfParallelism(_configuration.FileReaderParallelism)
+				.WithExecutionMode(ParallelExecutionMode.ForceParallelism)
+				//.ForEach(entry =>
+				.ForAll(entry =>
 						 {
 
 							 percentage += step;
@@ -119,36 +124,40 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 			catch (Exception e)
 			{
 				Trace.WriteLine($"Problem getting media info for \"{entry.Fullname}\". Error:\r\n{e.Source}: {e.Message}");
-			return false;
+				return false;
 			}
 		}
 
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static void GetShellInfo(Entry entry)
+		private void GetShellInfo(Entry entry)
 		{
-			using (var shellFile = ShellFile.FromFilePath(entry.Fullname))
+			lock (this)
 			{
-				var durationNs = shellFile.Properties.System.Media.Duration.Value;
-				if (durationNs == null || durationNs == 0)
-					return;
+				using (var shellFile = ShellFile.FromFilePath(entry.Fullname))
+				{
+					var durationNs = shellFile.Properties.System.Media.Duration.Value;
+					if (durationNs == null || durationNs == 0)
+						return;
 
-				var duration = TimeSpan.FromMilliseconds(durationNs.Value * 0.0001);
-				//cheap video detection
-				if (shellFile.Properties.System.Video.FrameWidth.Value.HasValue)
-				{
-					var video = shellFile.Properties.System.Video;
-					entry.MediaInfo = FormatVideo(duration,
-						(int)(video.FrameWidth.Value ?? 0),
-						(int)(video.FrameHeight.Value ?? 0),
-						video.FrameRate.Value / 1000);
-				}
-				else if (shellFile.Properties.System.Audio.ChannelCount.Value.HasValue)
-				{
-					entry.MediaInfo = FormatAudio(duration,
-						(int)((shellFile.Properties.System.Audio.EncodingBitrate.Value ?? 0) / 1000),
-						(shellFile.Properties.System.Audio.SampleRate.Value ?? 0) / 1000f,
-						(int)shellFile.Properties.System.Audio.ChannelCount.Value.Value);
+					var duration = TimeSpan.FromMilliseconds(durationNs.Value * 0.0001);
+					//cheap video detection
+					if (shellFile.Properties.System.Video.FrameWidth.Value.HasValue)
+					{
+						var video = shellFile.Properties.System.Video;
+						entry.MediaInfo = FormatVideo(duration,
+							(int)(video.FrameWidth.Value ?? 0),
+							(int)(video.FrameHeight.Value ?? 0),
+							video.FrameRate.Value / 1000);
+					}
+					else if (shellFile.Properties.System.Audio.ChannelCount.Value.HasValue)
+					{
+						entry.MediaInfo = FormatAudio(duration,
+							(int)((shellFile.Properties.System.Audio.EncodingBitrate.Value ?? 0) / 1000),
+							(shellFile.Properties.System.Audio.SampleRate.Value ?? 0) / 1000f,
+							(int)shellFile.Properties.System.Audio.ChannelCount.Value.Value);
+
+					}
 				}
 			}
 		}
