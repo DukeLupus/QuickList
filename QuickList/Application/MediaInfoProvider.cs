@@ -70,7 +70,7 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 
 							 percentage += step;
 
-							 var extension = Path.GetExtension(entry.Fullname) ?? string.Empty;
+							 var extension = $".{Utils.GetExtension(entry.Fullname) ?? string.Empty}";
 
 							 if (!_configuration.ForceShellMedia && _tagSharpFormats.Contains(extension))
 							 {

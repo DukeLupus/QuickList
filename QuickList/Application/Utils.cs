@@ -57,5 +57,18 @@ namespace Sander.QuickList.Application
 
 			return FormattableString.Invariant($"{(readable / 1024).ToString(numberFormat, CultureInfo.InvariantCulture)}{suffix}");
 		}
+
+		/// <summary>
+		/// Return extension. Should be slightly faster than inbuild method
+		/// </summary>
+		/// <returns></returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal static string GetExtension(string filename)
+		{
+			var lastDot = filename.LastIndexOf(".", StringComparison.Ordinal);
+			if (lastDot == -1)
+				return null;
+			return filename.Substring(lastDot + 1);
+		}
 	}
 }

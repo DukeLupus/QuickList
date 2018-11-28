@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Sander.QuickList.Application.Enums;
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
@@ -87,7 +88,18 @@ namespace Sander.QuickList.Application
 				_configuration.Status = Status.Get("Gathering files", percentage);
 			}
 
+
+			if (_configuration.ExcludedExtensions?.Count > 0)
+				ExcludeByExtension(fileList);
+
 			return fileList;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void ExcludeByExtension(List<Entry> fileList)
+		{
+			foreach (var extension in _configuration.ExcludedExtensions)
+				fileList.RemoveAll(x => string.Compare(Utils.GetExtension(x.Fullname), extension, StringComparison.OrdinalIgnoreCase) == 0);
 		}
 
 
@@ -221,6 +233,7 @@ namespace Sander.QuickList.Application
 			}
 
 			if (findHandle != INVALID_HANDLE_VALUE) FindClose(findHandle);
+
 			return fileList.ToList();
 		}
 

@@ -64,6 +64,11 @@ namespace Sander.QuickList.Application
 		/// </summary>
 		internal int FileReaderParallelism { get; set; }
 
+		/// <summary>
+		/// Excluded extensions
+		/// </summary>
+		internal List<string> ExcludedExtensions { get; set; }
+
 
 		internal static Configuration Parse(string iniFile)
 		{

@@ -60,7 +60,8 @@ namespace Sander.QuickList
 				IniFile = @"c:\temp\out\testaudio.ini",
 				ShowUi = true,
 				ForceShellMedia = false,
-				FileReaderParallelism = 1
+				FileReaderParallelism = 1,
+				ExcludedExtensions = new List<string> { "txt", "json", "xml", "dll", "pdb"}
 			};
 #endif
 			configuration.Validate();
