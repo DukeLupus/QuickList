@@ -1,3 +1,7 @@
+![QuickList v3](https://user-images.githubusercontent.com/18664267/49150927-fa5c8e80-f316-11e8-8fbf-92ae266726bf.png)
+
+Download the latest version by clicking [here](https://github.com/DukeLupus/QuickList/releases/download/v3-beta.3/QuickList.v3.beta3.zip), also see the [Releases](https://github.com/DukeLupus/QuickList/releases) page for older versions and changes.
+
 ### Installation
 
 1. Open OmenServe\ListMagic folder - usually &lt;mirc folder&gt;\OmenServe\ListMagic
@@ -17,6 +21,10 @@
 * Supports additional media types with shell integration (shell aka Windows Explorer must be capable of showing the media duration and additional info. This may require an installation of specific codecs/codec packs): g2, 3gp, act, alax, amd, awb, dct, dss, dvf, f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob
 
 
+### Advanced
+QuickList v3 creates section [QuickList] in the ListMagic ini file (the one you can open from QuickList UI). While most of the configuration can be controlled from the UI, there are some advanced keys which cannot be controlled from UI.
+- **ForceShellMedia** - default value 0 (ForceShellMedia=0), set to 1 to use Windows Shell instead of taglib# for getting the media info. This is considerably slower, but can be more accurate (depends on installed codecs).
+- **FileReaderParallelism** - default value 1 (FileReaderParallelism=1). Increase this to enable multi-threading of file and media info gathering. This should only be increased for SSD drives, and will slow down list generation on regular ATA hard drives. Using larger numbers than CPU core count is not recommended.
 
 
 
