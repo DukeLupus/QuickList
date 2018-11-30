@@ -1,6 +1,6 @@
 ![QuickList v3](https://user-images.githubusercontent.com/18664267/49150927-fa5c8e80-f316-11e8-8fbf-92ae266726bf.png)
 
-Download the latest version by clicking [here](https://github.com/DukeLupus/QuickList/releases/download/v3-beta.3/QuickList.v3.beta3.zip), also see the [Releases](https://github.com/DukeLupus/QuickList/releases) page for older versions and changes.
+Download the latest beta version by clicking [here](https://github.com/DukeLupus/QuickList/releases/download/v3-beta.4/QuickList.v3.beta4.zip), see also the [Releases](https://github.com/DukeLupus/QuickList/releases) page for older versions and changes.
 
 ### Installation
 
