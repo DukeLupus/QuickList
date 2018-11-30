@@ -86,6 +86,16 @@ namespace Sander.QuickList.Application
 				ForceShellMedia = IniReader.ReadValue("QuickList", "ForceShellMedia", iniFile, "0") == "1"
 			};
 
+
+			var excludedExtensions = IniReader.ReadValue("ListMagic", "Exclude", iniFile);
+
+			if (!string.IsNullOrWhiteSpace(excludedExtensions))
+			{
+				configuration.ExcludedExtensions = excludedExtensions.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+				                                                     .Select(x => x.TrimStart('.').Trim().ToLowerInvariant())
+				                                                     .ToList();
+			}
+
 			int.TryParse(IniReader.ReadValue("QuickList", "FileReaderParallelism", "1"), out var fileReaderParallelism);
 			configuration.FileReaderParallelism = fileReaderParallelism;
 
@@ -126,7 +136,7 @@ namespace Sander.QuickList.Application
 			IniReader.WriteValue("QuickList", "FolderHandling", FolderHandling.ToString(), IniFile);
 			IniReader.WriteValue("QuickList", "FileInfo", FileInfo.ToString(), IniFile);
 			IniReader.WriteValue("QuickList", "ForceShellMedia", ForceShellMedia ? "1" : "0", IniFile);
-			IniReader.WriteValue("QuickList", "FileReaderParallelism", FileReaderParallelism.ToString() , IniFile);
+			IniReader.WriteValue("QuickList", "FileReaderParallelism", FileReaderParallelism.ToString(), IniFile);
 		}
 	}
 }
