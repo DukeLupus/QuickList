@@ -96,7 +96,10 @@ namespace Sander.QuickList.Application
 				                                                     .ToList();
 			}
 
-			int.TryParse(IniReader.ReadValue("QuickList", "FileReaderParallelism", "1"), out var fileReaderParallelism);
+			int.TryParse(IniReader.ReadValue("QuickList", "FileReaderParallelism", iniFile, "1"), out var fileReaderParallelism);
+			if (fileReaderParallelism <= 0)
+				fileReaderParallelism = 1;
+
 			configuration.FileReaderParallelism = fileReaderParallelism;
 
 			var dirsFile = IniReader.ReadValue("ListMagic", "DirsFile", iniFile);
