@@ -69,6 +69,10 @@ namespace Sander.QuickList.Application
 		/// </summary>
 		internal List<string> ExcludedExtensions { get; set; }
 
+		/// <summary>
+		/// Excluded file names. Defaults to "desktop.ini:thumbs.db"
+		/// </summary>
+		internal List<string> ExcludedFilenames { get; set; }
 
 		internal static Configuration Parse(string iniFile)
 		{
@@ -92,15 +96,25 @@ namespace Sander.QuickList.Application
 			if (!string.IsNullOrWhiteSpace(excludedExtensions))
 			{
 				configuration.ExcludedExtensions = excludedExtensions.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-				                                                     .Select(x => x.TrimStart('.').Trim().ToLowerInvariant())
+				                                                     .Select(x => x.Trim().TrimStart('.').ToLowerInvariant())
 				                                                     .ToList();
 			}
 
 			int.TryParse(IniReader.ReadValue("QuickList", "FileReaderParallelism", iniFile, "1"), out var fileReaderParallelism);
 			if (fileReaderParallelism <= 0)
-				fileReaderParallelism = 1;
+				fileReaderParallelism = 1;			
 
 			configuration.FileReaderParallelism = fileReaderParallelism;
+
+			var excludedFilenames = IniReader.ReadValue("QuickList", "ExcludedFilenames", iniFile, "desktop.ini:thumbs.db");
+
+			if (!string.IsNullOrWhiteSpace(excludedFilenames))
+			{
+				configuration.ExcludedFilenames = excludedFilenames
+					.Split(new[] { ':' })
+					.Select(x => x.Trim())
+					.ToList();
+			}
 
 			var dirsFile = IniReader.ReadValue("ListMagic", "DirsFile", iniFile);
 
@@ -140,6 +154,9 @@ namespace Sander.QuickList.Application
 			IniReader.WriteValue("QuickList", "FileInfo", FileInfo.ToString(), IniFile);
 			IniReader.WriteValue("QuickList", "ForceShellMedia", ForceShellMedia ? "1" : "0", IniFile);
 			IniReader.WriteValue("QuickList", "FileReaderParallelism", FileReaderParallelism.ToString(), IniFile);
+
+			if (ExcludedFilenames?.Count > 0)			
+				IniReader.WriteValue("QuickList", "ExcludedFilenames", string.Join(":", ExcludedFilenames), IniFile);		
 		}
 	}
 }

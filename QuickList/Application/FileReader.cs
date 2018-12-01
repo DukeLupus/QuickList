@@ -56,7 +56,7 @@ namespace Sander.QuickList.Application
 		{
 			double folderRange = _configuration.FileInfo == FileInfoLevel.Full ? 40 : 80;
 
-			var step =  folderRange / _configuration.InputFolders.Count / 2;
+			var step = folderRange / _configuration.InputFolders.Count / 2;
 			var percentage = 0d;
 
 			var fileList = new List<Entry>(100000);
@@ -88,11 +88,22 @@ namespace Sander.QuickList.Application
 				_configuration.Status = Status.Get("Gathering files", percentage);
 			}
 
+			if (_configuration.ExcludedFilenames?.Count > 0)
+				ExcludeByName(fileList);
 
 			if (_configuration.ExcludedExtensions?.Count > 0)
 				ExcludeByExtension(fileList);
 
 			return fileList;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void ExcludeByName(List<Entry> fileList)
+		{
+			foreach (var filename in _configuration.ExcludedFilenames)
+			{
+				fileList.RemoveAll(x => string.Compare(Utils.GetFilename(x.Fullname), filename, StringComparison.OrdinalIgnoreCase) == 0);
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

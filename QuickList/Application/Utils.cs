@@ -59,7 +59,7 @@ namespace Sander.QuickList.Application
 		}
 
 		/// <summary>
-		/// Return extension. Should be slightly faster than inbuild method
+		/// Return extension. Should be slightly faster than inbuilt method
 		/// </summary>
 		/// <returns></returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -69,6 +69,17 @@ namespace Sander.QuickList.Application
 			if (lastDot == -1)
 				return null;
 			return filename.Substring(lastDot + 1);
+		}
+
+		/// <summary>
+		/// Return pathless filename. Should be faster than inbuilt method
+		/// </summary>
+		/// <param name="fullname"></param>
+		/// <returns></returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal static string GetFilename(string fullname)
+		{
+			return fullname.Substring(fullname.LastIndexOf("\\", StringComparison.Ordinal) + 1);
 		}
 	}
 }

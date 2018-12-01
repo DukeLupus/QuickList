@@ -79,7 +79,7 @@ namespace Sander.QuickList.Application
 		internal string FormatEntry(Entry entry)
 		{
 			//var formattedEntry = FormattableString.Invariant($"{_configuration.Trigger} {Path.GetFileName(entry.Fullname)}");
-			var formattedEntry = FormattableString.Invariant($"{_configuration.Trigger} {entry.Fullname.Substring(entry.Fullname.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase) + 1)}");
+			var formattedEntry = FormattableString.Invariant($"{_configuration.Trigger} {Utils.GetFilename(entry.Fullname)}");
 			if (_configuration.FileInfo == FileInfoLevel.NoInfo)
 				return formattedEntry;
 
