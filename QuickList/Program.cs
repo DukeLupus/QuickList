@@ -18,6 +18,8 @@ namespace Sander.QuickList
 		/// </summary>
 		private const string QuicklistLog = "QuickList.log";
 
+		internal const string Version = "3.0 beta 5";
+
 		private static string _traceName;
 
 		internal static bool OpenLog { get; set; }
@@ -60,10 +62,13 @@ namespace Sander.QuickList
 				IniFile = @"c:\temp\out\testaudio.ini",
 				ShowUi = true,
 				ForceShellMedia = false,
-				FileReaderParallelism = 1,
-				ExcludedExtensions = new List<string> { "txt", "json", "xml", "dll", "pdb"}
+				FileReaderParallelism = 4,
+				ExcludedExtensions = new List<string> { "txt", "json", "xml", "dll", "pdb"},
+				ExcludedFilenames = new List<string> { "desktop.ini" },
 			};
 #endif
+			Trace.TraceInformation($"QuickList v{Version}");
+			Trace.TraceInformation(configuration.ToString());
 			configuration.Validate();
 
 			if (configuration.ShowUi)

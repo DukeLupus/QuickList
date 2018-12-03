@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Sander.QuickList.Application.Enums;
 
 namespace Sander.QuickList.Application
@@ -57,6 +58,9 @@ namespace Sander.QuickList.Application
 		/// </summary>
 		internal bool ForceShellMedia { get; set; }
 
+		/// <summary>
+		/// Status/progress to display on form
+		/// </summary>
 		internal Status Status { get; set; }
 
 		/// <summary>
@@ -74,6 +78,7 @@ namespace Sander.QuickList.Application
 		/// </summary>
 		internal List<string> ExcludedFilenames { get; set; }
 
+
 		internal static Configuration Parse(string iniFile)
 		{
 			var configuration = new Configuration
@@ -90,7 +95,6 @@ namespace Sander.QuickList.Application
 				ForceShellMedia = IniReader.ReadValue("QuickList", "ForceShellMedia", iniFile, "0") == "1"
 			};
 
-
 			var excludedExtensions = IniReader.ReadValue("ListMagic", "Exclude", iniFile);
 
 			if (!string.IsNullOrWhiteSpace(excludedExtensions))
@@ -102,7 +106,7 @@ namespace Sander.QuickList.Application
 
 			int.TryParse(IniReader.ReadValue("QuickList", "FileReaderParallelism", iniFile, "1"), out var fileReaderParallelism);
 			if (fileReaderParallelism <= 0)
-				fileReaderParallelism = 1;			
+				fileReaderParallelism = 1;
 
 			configuration.FileReaderParallelism = fileReaderParallelism;
 
@@ -111,9 +115,9 @@ namespace Sander.QuickList.Application
 			if (!string.IsNullOrWhiteSpace(excludedFilenames))
 			{
 				configuration.ExcludedFilenames = excludedFilenames
-					.Split(new[] { ':' })
-					.Select(x => x.Trim())
-					.ToList();
+				                                  .Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries)
+				                                  .Select(x => x.Trim())
+				                                  .ToList();
 			}
 
 			var dirsFile = IniReader.ReadValue("ListMagic", "DirsFile", iniFile);
@@ -122,10 +126,10 @@ namespace Sander.QuickList.Application
 				throw new FileNotFoundException($"Folders file \"{dirsFile}\" does not exist!");
 
 			var folders = File.ReadAllLines(dirsFile)
-							  .Select(x => x.Trim())
-							  .Where(x => !string.IsNullOrWhiteSpace(x))
-							  .Distinct()
-							  .ToList();
+			                  .Select(x => x.Trim())
+			                  .Where(x => !string.IsNullOrWhiteSpace(x))
+			                  .Distinct()
+			                  .ToList();
 
 			configuration.InputFolders = folders;
 			configuration.Validate();
@@ -155,8 +159,30 @@ namespace Sander.QuickList.Application
 			IniReader.WriteValue("QuickList", "ForceShellMedia", ForceShellMedia ? "1" : "0", IniFile);
 			IniReader.WriteValue("QuickList", "FileReaderParallelism", FileReaderParallelism.ToString(), IniFile);
 
-			if (ExcludedFilenames?.Count > 0)			
-				IniReader.WriteValue("QuickList", "ExcludedFilenames", string.Join(":", ExcludedFilenames), IniFile);		
+			if (ExcludedFilenames?.Count > 0)
+				IniReader.WriteValue("QuickList", "ExcludedFilenames", string.Join(":", ExcludedFilenames), IniFile);
+		}
+
+
+		/// <inheritdoc />
+		public override string ToString()
+		{
+			var sb = new StringBuilder("\r\n=== Configuration ===\r\n");
+			sb.AppendLine($"IniFile: {IniFile}");
+			sb.AppendLine($"ListName: {ListName}");
+			sb.AppendLine($"Trigger: {Trigger}");
+			sb.AppendLine($"InputFolders: {string.Join(";", InputFolders)}");
+			sb.AppendLine($"OutputFolder: {OutputFolder}");
+			sb.AppendLine($"HeaderFile: {HeaderFile}");
+			sb.AppendLine($"FileInfoLevel: {FileInfo}");
+			sb.AppendLine($"FolderHandling: {FolderHandling}");
+			sb.AppendLine($"ShowUi: {ShowUi}");
+			sb.AppendLine($"FileReaderParallelism: {FileReaderParallelism}");
+			sb.AppendLine($"ExcludedExtensions: {string.Join(";", ExcludedExtensions)}");
+			sb.AppendLine($"ExcludedFilenames: {string.Join(";", ExcludedFilenames)}");
+			sb.AppendLine($"MediaCacheFile: {MediaCacheFile}");
+			sb.AppendLine($"ForceShellMedia: {ForceShellMedia}");
+			return sb.ToString();
 		}
 	}
 }

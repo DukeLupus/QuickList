@@ -26,7 +26,7 @@ namespace Sander.QuickList.UI
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			Text = FormattableString.Invariant($"QuickList v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}");
+			Text = FormattableString.Invariant($"QuickList v{Program.Version}");
 			CurrentListLabel.Text = Path.GetFileNameWithoutExtension(_configuration.IniFile);
 
 			switch (_configuration.FileInfo)
