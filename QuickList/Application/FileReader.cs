@@ -169,7 +169,7 @@ namespace Sander.QuickList.Application
 							}
 							else if (!findData.dwFileAttributes.HasFlag(FileAttributes.Directory))
 							{
-								fileList.Add(new Entry { Fullname = fullPath, Size = findData.nFileSizeLow });
+								fileList.Add(new Entry { Fullname = fullPath, Size = (long)findData.nFileSizeHigh << 0x20 | findData.nFileSizeLow });
 							}
 						}
 					} while (FindNextFile(findHandle, out findData));
@@ -215,7 +215,7 @@ namespace Sander.QuickList.Application
 							}
 							else if (!findData.dwFileAttributes.HasFlag(FileAttributes.Directory))
 							{
-								fileList.Add(new Entry { Fullname = fullPath, Size = findData.nFileSizeLow });
+								fileList.Add(new Entry { Fullname = fullPath, Size = (long)findData.nFileSizeHigh << 0x20 | findData.nFileSizeLow });
 							}
 						}
 					} while (FindNextFile(findHandle, out findData));
@@ -256,8 +256,8 @@ namespace Sander.QuickList.Application
 			internal readonly FILETIME ftCreationTime;
 			internal readonly FILETIME ftLastAccessTime;
 			internal readonly FILETIME ftLastWriteTime;
-			internal readonly int nFileSizeHigh;
-			internal readonly int nFileSizeLow;
+			internal readonly uint nFileSizeHigh;
+			internal readonly uint nFileSizeLow;
 			internal readonly int dwReserved0;
 			internal readonly int dwReserved1;
 			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
