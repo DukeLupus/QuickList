@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.WindowsAPICodePack.Shell;
 using Sander.QuickList.TagLib;
@@ -107,13 +107,13 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 
 					if ((file.Properties.MediaTypes & MediaTypes.Video) != 0)
 					{
-						entry.MediaInfo = FormatVideo(file.Properties.Duration, file.Properties.VideoWidth, file.Properties.VideoHeight, null);
+						entry.MediaInfo = FormatVideo(RoundDuration(file.Properties.Duration), file.Properties.VideoWidth, file.Properties.VideoHeight, null);
 						return true;
 					}
 
 					if ((file.Properties.MediaTypes & MediaTypes.Audio) != 0)
 					{
-						entry.MediaInfo = FormatAudio(file.Properties.Duration, file.Properties.AudioBitrate, file.Properties.AudioSampleRate / 1000f,
+						entry.MediaInfo = FormatAudio(RoundDuration(file.Properties.Duration), file.Properties.AudioBitrate, file.Properties.AudioSampleRate / 1000f,
 							file.Properties.AudioChannels);
 						return true;
 					}
@@ -140,7 +140,7 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 					if (durationNs == null || durationNs == 0)
 						return;
 
-					var duration = TimeSpan.FromMilliseconds(durationNs.Value * 0.0001);
+					var duration = RoundDuration(TimeSpan.FromMilliseconds(durationNs.Value * 0.0001));
 					//cheap video detection
 					if (shellFile.Properties.System.Video.FrameWidth.Value.HasValue)
 					{
@@ -158,6 +158,11 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 							(int)shellFile.Properties.System.Audio.ChannelCount.Value.Value);
 
 					}
+					else //we don't have video or audio info beyond duration, so let's add at least that
+					{
+						entry.MediaInfo = $" {FormatDuration(duration)}";
+					}
+
 				}
 			}
 		}
@@ -168,7 +173,7 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 		{
 			//MediaInfo must start with a space
 			return FormattableString.Invariant(
-				$" {duration.ToString("m'm'''ss's'")} {width}x{height}{(framerate.HasValue ? string.Concat("/", framerate, "fps") : string.Empty)}");
+				$" {FormatDuration(duration)} {width}x{height}{(framerate.HasValue ? string.Concat("/", framerate, "fps") : string.Empty)}");
 		}
 
 
@@ -176,7 +181,36 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 		private static string FormatAudio(TimeSpan duration, int bitrate, float samplerate, int channelCount)
 		{
 			//MediaInfo must start with a space
-			return FormattableString.Invariant($" {duration.ToString("m'm'''ss's'")} {bitrate}/{samplerate}/{(channelCount == 2 ? 'S' : 'M')}");
+			return FormattableString.Invariant($" {FormatDuration(duration)} {bitrate}/{samplerate}/{(channelCount == 2 ? 'S' : 'M')}");
 		}
+
+		/// <summary>
+		/// Round seconds to closest. No one is interested in fractional seconds...
+		/// Also, some old AVIs report negative duration
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private TimeSpan RoundDuration(TimeSpan duration)
+		{
+			return duration == TimeSpan.Zero ? TimeSpan.Zero : TimeSpan.FromSeconds((int)Math.Round(Math.Abs(duration.TotalSeconds), MidpointRounding.ToEven));
+		}
+
+
+		/// <summary>
+		/// Format duration. Handles time better than inbuilt, but isn't culture-specific
+		/// </summary>
+		private static string FormatDuration(TimeSpan time)
+		{
+			if (time == TimeSpan.Zero)
+				return string.Empty;
+
+			var sb = new StringBuilder();
+			if (time.Hours > 0) sb.Append($"{time.Hours}h");
+
+			sb.Append($"{time.Minutes}m");
+			sb.Append($"{time.Seconds}s");
+
+			return sb.ToString();
+		}
+
 	}
 }
