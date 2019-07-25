@@ -196,20 +196,40 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 
 
 		/// <summary>
-		/// Format duration. Handles time better than inbuilt, but isn't culture-specific
+		/// Faster format then inbuilt or string builder. May need tweaking
 		/// </summary>
 		private static string FormatDuration(TimeSpan time)
-		{
-			if (time == TimeSpan.Zero)
-				return string.Empty;
+		{ 
+			/*
+		Method	Mean	Error	StdDev	Ratio	Gen 0	Gen 1	Gen 2	Allocated
+WithArray	3.733 s	0.0719 s	0.0855 s	1.00	180000.0000	112000.0000	2000.0000	1.08 GB
+WithStringBuilder	8.663 s	0.1297 s	0.1213 s	1.00	396000.0000	289000.0000	1000.0000	2.35 GB		 
+		 */
 
-			var sb = new StringBuilder();
-			if (time.Hours > 0) sb.Append($"{time.Hours}h");
+			var chars = new char[9];
+			var hours = time.Hours;
+			var minutes = time.Minutes;
+			var seconds = time.Seconds;
 
-			sb.Append($"{time.Minutes}m");
-			sb.Append($"{time.Seconds}s");
+			if (hours > 10) chars[0] = (char)('0' + hours / 10);
+			if (hours > 0)
+			{
+				chars[1] = (char)('0' + hours % 10);
+				chars[2] = 'h';
+			}
 
-			return sb.ToString();
+			if (minutes > 10 || hours > 0) chars[3] = (char)('0' + minutes / 10);
+			if (minutes > 0 || hours > 0)
+			{
+				chars[4] = (char)('0' + minutes % 10);
+				chars[5] = 'm';
+			}
+
+			chars[6] = (char)('0' + seconds / 10);
+			chars[7] = (char)('0' + seconds % 10);
+			chars[8] = 's';
+
+			return new string(chars).Trim('\0');
 		}
 
 	}

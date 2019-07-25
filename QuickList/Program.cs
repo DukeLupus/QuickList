@@ -18,7 +18,7 @@ namespace Sander.QuickList
 		/// </summary>
 		private const string QuicklistLog = "QuickList.log";
 
-		internal const string Version = "3.0 beta 5";
+		internal const string Version = "3.0 beta 6";
 
 		private static string _traceName;
 
