@@ -23,7 +23,7 @@ Download the latest beta version by clicking [here](https://github.com/DukeLupus
 
 
 ### Advanced
-QuickList v3 creates section [QuickList] in the ListMagic ini file (the one you can open from QuickList UI). While most of the configuration can be controlled from the UI, there are some advanced keys which cannot be controlled from UI.
+QuickList v3 creates section [QuickList] in the ListMagic .ini file (the one you can open from QuickList UI). While most of the configuration can be controlled from the UI, there are some advanced keys which cannot be controlled from UI.
 - **ForceShellMedia** - default value 0 (ForceShellMedia=0), set to 1 to use Windows Shell instead of taglib# for getting the media info. This is considerably slower, but can be more accurate (depends on installed codecs).
 - **FileReaderParallelism** - default value 1 (FileReaderParallelism=1). Increase this to enable multi-threading of file and media info gathering. This should only be increased for SSD drives, and will slow down list generation on regular ATA hard drives. Using larger numbers than CPU core count is not recommended.
 - **ExcludedFilenames** - exclude from list by filename, colon-separated (defaults to "desktop.ini:thumbs.db")
