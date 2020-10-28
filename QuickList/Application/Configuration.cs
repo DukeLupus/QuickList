@@ -12,69 +12,69 @@ namespace Sander.QuickList.Application
 		internal List<string> InputFolders { get; set; } = new List<string>();
 
 		/// <summary>
-		/// !trigger
+		///     !trigger
 		/// </summary>
 		internal string Trigger { get; set; }
 
 		/// <summary>
-		/// Optional header file
+		///     Optional header file
 		/// </summary>
 		internal string HeaderFile { get; set; }
 
 		/// <summary>
-		/// Output file folder
+		///     Output file folder
 		/// </summary>
 		internal string OutputFolder { get; set; }
 
 		/// <summary>
-		/// How to include the folders?
+		///     How to include the folders?
 		/// </summary>
 		internal FolderHandling FolderHandling { get; set; } = FolderHandling.PartialFolders;
 
 		internal bool ShowUi { get; set; }
 
 		/// <summary>
-		/// How much file info should be included?
+		///     How much file info should be included?
 		/// </summary>
 		internal FileInfoLevel FileInfo { get; set; }
 
 		/// <summary>
-		/// List name, as per ini file name
+		///     List name, as per ini file name
 		/// </summary>
 		internal string ListName { get; set; }
 
 		/// <summary>
-		/// Current ini file
+		///     Current ini file
 		/// </summary>
 		internal string IniFile { get; set; }
 
 		/// <summary>
-		/// Media cache file
+		///     Media cache file
 		/// </summary>
 		internal string MediaCacheFile => Path.Combine(OutputFolder, "MediaCache.ql3");
 
 		/// <summary>
-		/// Force all media fetching to be done by shell, not TagLib#
+		///     Force all media fetching to be done by shell, not TagLib#
 		/// </summary>
 		internal bool ForceShellMedia { get; set; }
 
 		/// <summary>
-		/// Status/progress to display on form
+		///     Status/progress to display on form
 		/// </summary>
 		internal Status Status { get; set; }
 
 		/// <summary>
-		/// How many threads to run at once for file reader?
+		///     How many threads to run at once for file reader?
 		/// </summary>
 		internal int FileReaderParallelism { get; set; }
 
 		/// <summary>
-		/// Excluded extensions
+		///     Excluded extensions
 		/// </summary>
 		internal List<string> ExcludedExtensions { get; set; }
 
 		/// <summary>
-		/// Excluded file names. Defaults to "desktop.ini:thumbs.db"
+		///     Excluded file names. Defaults to "desktop.ini:thumbs.db"
 		/// </summary>
 		internal List<string> ExcludedFilenames { get; set; }
 
@@ -100,13 +100,15 @@ namespace Sander.QuickList.Application
 			if (!string.IsNullOrWhiteSpace(excludedExtensions))
 			{
 				configuration.ExcludedExtensions = excludedExtensions.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-				                                                     .Select(x => x.Trim().TrimStart('.').ToLowerInvariant())
-				                                                     .ToList();
+					.Select(x => x.Trim().TrimStart('.').ToLowerInvariant())
+					.ToList();
 			}
 
 			int.TryParse(IniReader.ReadValue("QuickList", "FileReaderParallelism", iniFile, "1"), out var fileReaderParallelism);
 			if (fileReaderParallelism <= 0)
+			{
 				fileReaderParallelism = 1;
+			}
 
 			configuration.FileReaderParallelism = fileReaderParallelism;
 
@@ -115,23 +117,23 @@ namespace Sander.QuickList.Application
 			if (!string.IsNullOrWhiteSpace(excludedFilenames))
 			{
 				configuration.ExcludedFilenames = excludedFilenames
-				                                  .Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries)
-				                                  .Select(x => x.Trim())
-				                                  .ToList();
+					.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries)
+					.Select(x => x.Trim())
+					.ToList();
 			}
 
 			var dirsFile = IniReader.ReadValue("ListMagic", "DirsFile", iniFile);
 
 			if (!File.Exists(dirsFile))
+			{
 				throw new FileNotFoundException($"Folders file \"{dirsFile}\" does not exist!");
+			}
 
-			var folders = File.ReadAllLines(dirsFile)
-			                  .Select(x => x.Trim())
-			                  .Where(x => !string.IsNullOrWhiteSpace(x))
-			                  .Distinct()
-			                  .ToList();
-
-			configuration.InputFolders = folders;
+			configuration.InputFolders = File.ReadAllLines(dirsFile)
+				.Select(x => x.Trim())
+				.Where(x => !string.IsNullOrWhiteSpace(x))
+				.Distinct()
+				.ToList();
 			configuration.Validate();
 
 			return configuration;
@@ -141,10 +143,14 @@ namespace Sander.QuickList.Application
 		internal void Validate()
 		{
 			if (!File.Exists(HeaderFile))
+			{
 				HeaderFile = null;
+			}
 
 			if (!Trigger.StartsWith("!", StringComparison.Ordinal))
+			{
 				Trigger = $"!{Trigger}";
+			}
 
 			Update();
 
@@ -160,7 +166,9 @@ namespace Sander.QuickList.Application
 			IniReader.WriteValue("QuickList", "FileReaderParallelism", FileReaderParallelism.ToString(), IniFile);
 
 			if (ExcludedFilenames?.Count > 0)
+			{
 				IniReader.WriteValue("QuickList", "ExcludedFilenames", string.Join(":", ExcludedFilenames), IniFile);
+			}
 		}
 
 

@@ -26,7 +26,7 @@ namespace Sander.QuickList.Application
 
 
 		/// <summary>
-		/// Make the !trigger list
+		///     Make the !trigger list
 		/// </summary>
 		internal void CreateNiceList()
 		{
@@ -39,11 +39,8 @@ namespace Sander.QuickList.Application
 			else
 			{
 				//Substring-LastIndexOf performs considerably better than Path.GetDirectoryName()
-				var folders = _entries.GroupBy(x => x.Fullname.Substring(0, x.Fullname.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase)));
-
-				foreach (var grouping in folders)
+				foreach (var grouping in _entries.GroupBy(x => x.Fullname.Substring(0, x.Fullname.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase))))
 				{
-
 					var folder = _configuration.FolderHandling == FolderHandling.PartialFolders ? CreatePartialFolder(grouping.Key) : grouping.Key;
 
 					var eqLine = new string('=', folder.Length);
@@ -74,18 +71,21 @@ namespace Sander.QuickList.Application
 
 
 		/// <summary>
-		/// Get entry as it appears in the list
+		///     Get entry as it appears in the list
 		/// </summary>
 		internal string FormatEntry(Entry entry)
 		{
 			//var formattedEntry = FormattableString.Invariant($"{_configuration.Trigger} {Path.GetFileName(entry.Fullname)}");
 			var formattedEntry = FormattableString.Invariant($"{_configuration.Trigger} {Utils.GetFilename(entry.Fullname)}");
 			if (_configuration.FileInfo == FileInfoLevel.NoInfo)
+			{
 				return formattedEntry;
+			}
 
 			return FormattableString.Invariant(
 				$"{formattedEntry} ::INFO::{Utils.ReadableSize(entry.Size, " 0.##")}{(_configuration.FileInfo == FileInfoLevel.Full ? entry.MediaInfo : string.Empty)}");
 		}
+
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private string CreatePartialFolder(string folder)
@@ -96,7 +96,10 @@ namespace Sander.QuickList.Application
 				{
 					folder = folder.Substring(inputFolder.Length).Trim('\\');
 					if (folder.Length == 0)
+					{
 						folder = _configuration.ListName;
+					}
+
 					break;
 				}
 			}
@@ -106,42 +109,49 @@ namespace Sander.QuickList.Application
 
 
 		/// <summary>
-		/// Creates Statfile.txt in same folder as QuickList.exe.
-		/// The format seems to be - per line:
-		/// Size in bytes
-		/// Number of entries
-		/// Entries/second
-		/// Total time in format hh:mm:ss
-		/// Empty line
-		/// Input ini file, excl. path
+		///     Creates Statfile.txt in same folder as QuickList.exe.
+		///     The format seems to be - per line:
+		///     Size in bytes
+		///     Number of entries
+		///     Entries/second
+		///     Total time in format hh:mm:ss
+		///     Empty line
+		///     Input ini file, excl. path
 		/// </summary>
 		internal void CreateStatFile(TimeSpan duration)
 		{
 			var stats = new StringBuilder();
 			stats.AppendLine(_entries.Sum(x => x.Size)
-									 .ToString(CultureInfo.InvariantCulture));
+				.ToString(CultureInfo.InvariantCulture));
 
 			stats.AppendLine(_entries.Count.ToString(CultureInfo.InvariantCulture));
 			if (duration.TotalSeconds > 1)
+			{
 				stats.AppendLine(Math.Ceiling(_entries.Count / duration.TotalSeconds)
-				                     .ToString(CultureInfo.InvariantCulture));
+					.ToString(CultureInfo.InvariantCulture));
+			}
 			else
+			{
 				stats.AppendLine(_entries.Count.ToString(CultureInfo.InvariantCulture));
+			}
+
 			stats.AppendLine(duration.ToString("c"));
 			stats.AppendLine();
 			stats.AppendLine(Path.GetFileName(_configuration.IniFile));
 
 			// ReSharper disable once AssignNullToNotNullAttribute
 			var fileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly()
-			                                                          .Location), "statfile.txt");
+				.Location), "statfile.txt");
+
 			using (var sw = new StreamWriter(fileName, false, Encoding.UTF8, 2 << 16 /* 128KB*/))
 			{
 				sw.Write(stats.ToString());
 			}
 		}
 
+
 		/// <summary>
-		/// Create "list.txt", just fullpath files
+		///     Create "list.txt", just fullpath files
 		/// </summary>
 		internal void CreateFileList()
 		{

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Sander.QuickList.Application;
-using Sander.QuickList.Application.Enums;
 using Sander.QuickList.UI;
 
 namespace Sander.QuickList
@@ -14,7 +12,7 @@ namespace Sander.QuickList
 	internal static class Program
 	{
 		/// <summary>
-		/// Default log file. Trace writer can use different file if locked
+		///     Default log file. Trace writer can use different file if locked
 		/// </summary>
 		private const string QuicklistLog = "QuickList.log";
 
@@ -26,7 +24,7 @@ namespace Sander.QuickList
 
 
 		/// <summary>
-		/// The main entry point for the application.
+		///     The main entry point for the application.
 		/// </summary>
 		[STAThread]
 		private static void Main(params string[] parameters)
@@ -87,14 +85,14 @@ namespace Sander.QuickList
 			OpenLog = true;
 #endif
 			if (OpenLog && File.Exists(_traceName))
+			{
 				Process.Start(new ProcessStartInfo
 				{
 					FileName = _traceName,
 					UseShellExecute = true,
 					Verb = "open"
 				});
-
-
+			}
 		}
 
 
@@ -121,18 +119,19 @@ namespace Sander.QuickList
 
 			CultureInfo.DefaultThreadCurrentCulture = CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 			CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
-			AppDomain.CurrentDomain.UnhandledException += delegate (object sender, UnhandledExceptionEventArgs args)
-														  {
-															  LogUnhandledException(args.ExceptionObject as Exception,
-																  $"Uncaught exception: {sender}, terminating: {args.IsTerminating}");
-														  };
+			AppDomain.CurrentDomain.UnhandledException += (object sender, UnhandledExceptionEventArgs args) =>
+			{
+				LogUnhandledException(args.ExceptionObject as Exception,
+					$"Uncaught exception: {sender}, terminating: {args.IsTerminating}");
+			};
 
-			TaskScheduler.UnobservedTaskException += delegate (object sender, UnobservedTaskExceptionEventArgs args)
-													 {
-														 LogUnhandledException(args.Exception,
-															 $"Uncaught task exception: {sender}");
-														 args.SetObserved();
-													 };
+			TaskScheduler.UnobservedTaskException += (object sender, UnobservedTaskExceptionEventArgs args) =>
+			{
+				LogUnhandledException(args.Exception,
+					$"Uncaught task exception: {sender}");
+
+				args.SetObserved();
+			};
 		}
 
 
@@ -140,6 +139,7 @@ namespace Sander.QuickList
 		{
 			MessageBox.Show($"Fatal error generating list. Check the {QuicklistLog} for more details\r\n\r\n{ex.Message}",
 				"Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
 			OpenLog = true;
 			Trace.TraceError(FormattableString.Invariant($"{message}\r\n{ex}"));
 			Trace.Flush();

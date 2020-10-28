@@ -4,7 +4,7 @@ using System.Text;
 namespace Sander.QuickList.Application
 {
 	/// <summary>
-	/// After https://code.msdn.microsoft.com/windowsdesktop/Reading-and-Writing-Values-85084b6a
+	///     After https://code.msdn.microsoft.com/windowsdesktop/Reading-and-Writing-Values-85084b6a
 	/// </summary>
 	internal sealed class IniReader
 	{
@@ -32,8 +32,7 @@ namespace Sander.QuickList.Application
 
 		internal static bool WriteValue(string section, string key, string value, string filePath)
 		{
-			var result = WritePrivateProfileString(section, key, value, filePath);
-			return result;
+			return WritePrivateProfileString(section, key, value, filePath);
 		}
 	}
 }

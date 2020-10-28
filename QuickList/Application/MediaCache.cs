@@ -20,7 +20,9 @@ namespace Sander.QuickList.Application
 		{
 			_configuration = configuration;
 			if (File.Exists(configuration.MediaCacheFile))
+			{
 				LoadMediaCache();
+			}
 		}
 
 
@@ -44,11 +46,13 @@ namespace Sander.QuickList.Application
 		internal bool GetCachedInfo(Entry entry)
 		{
 			if (_mediaCache == null || _mediaCache.Count == 0)
+			{
 				return false;
+			}
 
 			if (_mediaCache.TryGetValue(entry.Fullname, out var cached)
-				&& cached.Size == entry.Size
-				&& !string.IsNullOrWhiteSpace(cached.MediaInfo))
+			    && cached.Size == entry.Size
+			    && !string.IsNullOrWhiteSpace(cached.MediaInfo))
 			{
 				entry.MediaInfo = cached.MediaInfo;
 				return true;
@@ -62,7 +66,9 @@ namespace Sander.QuickList.Application
 		internal void AddEntry(Entry entry)
 		{
 			if (entry.MediaInfo != null)
+			{
 				_newCache.Add(entry);
+			}
 		}
 
 
@@ -72,8 +78,8 @@ namespace Sander.QuickList.Application
 			{
 				var sb = new StringBuilder(_newCache.Count * 128);
 				sb.Append(string.Join(Environment.NewLine, _newCache
-														   .Where(x => !string.IsNullOrWhiteSpace(x.MediaInfo))
-														   .Select(x => FormattableString.Invariant($"{x.Fullname}|{x.Size}|{x.MediaInfo}"))));
+					.Where(x => !string.IsNullOrWhiteSpace(x.MediaInfo))
+					.Select(x => FormattableString.Invariant($"{x.Fullname}|{x.Size}|{x.MediaInfo}"))));
 
 				using (var sw = new StreamWriter(_configuration.MediaCacheFile, false, Encoding.UTF8, 2 << 16 /* 128KB*/))
 				{

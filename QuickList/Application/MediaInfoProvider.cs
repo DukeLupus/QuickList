@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using Microsoft.WindowsAPICodePack.Shell;
 using Sander.QuickList.TagLib;
-using File = Sander.QuickList.TagLib.File;
-using Timer = System.Timers.Timer;
 
 namespace Sander.QuickList.Application
 {
@@ -26,7 +24,7 @@ namespace Sander.QuickList.Application
 			_configuration = configuration;
 
 			_tagSharpFormats = new HashSet<string>(
-@"aa, aac, aax, aif, aiff, ape, asf, avi, divx, dsf, fla, flac, m2a, m2v, m4a, m4b, m4p, m4v,
+				@"aa, aac, aax, aif, aiff, ape, asf, avi, divx, dsf, fla, flac, m2a, m2v, m4a, m4b, m4p, m4v,
 mka, mks, mkv, mp+, mp1, mp2, mp3, mp4, mpc, mpe, mpeg, mpg, mpp, mpv2, oga, ogg, ogv, opus, wav, webm, wma, wmv, wv"
 					.Split(',').Select(x => $".{x.Trim()}"),
 				StringComparer.OrdinalIgnoreCase);
@@ -53,10 +51,7 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 
 			if (_configuration.ShowUi)
 			{
-				timer = new Timer(250)
-				{
-					Enabled = true
-				};
+				timer = new Timer(250) { Enabled = true };
 				timer.Elapsed += (sender, args) => _configuration.Status = Status.Get("Getting media info", percentage);
 			}
 
@@ -66,28 +61,32 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 				.WithExecutionMode(ParallelExecutionMode.ForceParallelism)
 				//.ForEach(entry =>
 				.ForAll(entry =>
-						 {
+				{
+					percentage += step;
 
-							 percentage += step;
+					var extension = $".{Utils.GetExtension(entry.Fullname) ?? string.Empty}";
 
-							 var extension = $".{Utils.GetExtension(entry.Fullname) ?? string.Empty}";
+					if (!_configuration.ForceShellMedia && _tagSharpFormats.Contains(extension))
+					{
+						if (!_mediaCache.GetCachedInfo(entry) && !GetTagLibInfo(entry))
+						{
+							GetShellInfo(entry);
+						}
 
-							 if (!_configuration.ForceShellMedia && _tagSharpFormats.Contains(extension))
-							 {
-								 if (!_mediaCache.GetCachedInfo(entry) && !GetTagLibInfo(entry))
-									 GetShellInfo(entry);
+						_mediaCache.AddEntry(entry);
+						return;
+					}
 
-								 _mediaCache.AddEntry(entry);
-								 return;
-							 }
+					if (_mediaFormats.Contains(extension))
+					{
+						if (!_mediaCache.GetCachedInfo(entry))
+						{
+							GetShellInfo(entry);
+						}
 
-							 if (_mediaFormats.Contains(extension))
-							 {
-								 if (!_mediaCache.GetCachedInfo(entry))
-									 GetShellInfo(entry);
-								 _mediaCache.AddEntry(entry);
-							 }
-						 });
+						_mediaCache.AddEntry(entry);
+					}
+				});
 
 			timer?.Dispose();
 
@@ -103,7 +102,9 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 				using (var file = File.Create(new File.LocalFileAbstraction(entry.Fullname), null, ReadStyle.Average))
 				{
 					if (file == null || file.Properties.Duration == TimeSpan.Zero)
+					{
 						return false;
+					}
 
 					if ((file.Properties.MediaTypes & MediaTypes.Video) != 0)
 					{
@@ -113,8 +114,10 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 
 					if ((file.Properties.MediaTypes & MediaTypes.Audio) != 0)
 					{
-						entry.MediaInfo = FormatAudio(RoundDuration(file.Properties.Duration), file.Properties.AudioBitrate, file.Properties.AudioSampleRate / 1000f,
+						entry.MediaInfo = FormatAudio(RoundDuration(file.Properties.Duration), file.Properties.AudioBitrate,
+							file.Properties.AudioSampleRate / 1000f,
 							file.Properties.AudioChannels);
+
 						return true;
 					}
 				}
@@ -138,7 +141,9 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 				{
 					var durationNs = shellFile.Properties.System.Media.Duration.Value;
 					if (durationNs == null || durationNs == 0)
+					{
 						return;
+					}
 
 					var duration = RoundDuration(TimeSpan.FromMilliseconds(durationNs.Value * 0.0001));
 					//cheap video detection
@@ -156,13 +161,11 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 							(int)((shellFile.Properties.System.Audio.EncodingBitrate.Value ?? 0) / 1000),
 							(shellFile.Properties.System.Audio.SampleRate.Value ?? 0) / 1000f,
 							(int)shellFile.Properties.System.Audio.ChannelCount.Value.Value);
-
 					}
 					else //we don't have video or audio info beyond duration, so let's add at least that
 					{
 						entry.MediaInfo = $" {FormatDuration(duration)}";
 					}
-
 				}
 			}
 		}
@@ -184,9 +187,10 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 			return FormattableString.Invariant($" {FormatDuration(duration)} {bitrate}/{samplerate}/{(channelCount == 2 ? 'S' : 'M')}");
 		}
 
+
 		/// <summary>
-		/// Round seconds to closest. No one is interested in fractional seconds...
-		/// Also, some old AVIs report negative duration
+		///     Round seconds to closest. No one is interested in fractional seconds...
+		///     Also, some old AVIs report negative duration
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private TimeSpan RoundDuration(TimeSpan duration)
@@ -196,10 +200,10 @@ f4a, f4b, f4v, flv, m4a, mov, mts, mts2, qt, vob"
 
 
 		/// <summary>
-		/// Faster format then inbuilt or string builder. May need tweaking
+		///     Faster format then inbuilt or string builder. May need tweaking
 		/// </summary>
 		private static string FormatDuration(TimeSpan time)
-		{ 
+		{
 			/*
 		Method	Mean	Error	StdDev	Ratio	Gen 0	Gen 1	Gen 2	Allocated
 WithArray	3.733 s	0.0719 s	0.0855 s	1.00	180000.0000	112000.0000	2000.0000	1.08 GB
@@ -211,14 +215,22 @@ WithStringBuilder	8.663 s	0.1297 s	0.1213 s	1.00	396000.0000	289000.0000	1000.00
 			var minutes = time.Minutes;
 			var seconds = time.Seconds;
 
-			if (hours > 10) chars[0] = (char)('0' + hours / 10);
+			if (hours > 10)
+			{
+				chars[0] = (char)('0' + hours / 10);
+			}
+
 			if (hours > 0)
 			{
 				chars[1] = (char)('0' + hours % 10);
 				chars[2] = 'h';
 			}
 
-			if (minutes > 10 || hours > 0) chars[3] = (char)('0' + minutes / 10);
+			if (minutes > 10 || hours > 0)
+			{
+				chars[3] = (char)('0' + minutes / 10);
+			}
+
 			if (minutes > 0 || hours > 0)
 			{
 				chars[4] = (char)('0' + minutes % 10);
@@ -231,6 +243,5 @@ WithStringBuilder	8.663 s	0.1297 s	0.1213 s	1.00	396000.0000	289000.0000	1000.00
 
 			return new string(chars).Trim('\0');
 		}
-
 	}
 }

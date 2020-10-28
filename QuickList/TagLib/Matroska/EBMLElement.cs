@@ -3,34 +3,34 @@
 namespace Sander.QuickList.TagLib.Matroska
 {
 	/// <summary>
-	/// Represent a generic EBML Element and its content.
+	///     Represent a generic EBML Element and its content.
 	/// </summary>
 	public class EBMLelement
 	{
 		/// <summary>
-		/// Get or set the element embedded in the EBML
+		///     Get or set the element embedded in the EBML
 		/// </summary>
 		public List<EBMLelement> Children;
 
 		/// <summary>
-		/// Get or set the data represented by the EBML
+		///     Get or set the data represented by the EBML
 		/// </summary>
 		public ByteVector Data;
 
 		/// <summary>
-		/// EBML Element Identifier.
+		///     EBML Element Identifier.
 		/// </summary>
 		public MatroskaID ID = 0;
 
 		/// <summary>
-		/// Get or set whether the EBML should have a size of one byte more
-		/// than the optimal size.
+		///     Get or set whether the EBML should have a size of one byte more
+		///     than the optimal size.
 		/// </summary>
 		public bool IncSize;
 
 
 		/// <summary>
-		/// Constructs an empty <see cref="EBMLelement" />.
+		///     Constructs an empty <see cref="EBMLelement" />.
 		/// </summary>
 		public EBMLelement()
 		{
@@ -38,7 +38,7 @@ namespace Sander.QuickList.TagLib.Matroska
 
 
 		/// <summary>
-		/// Construct a <see cref="EBMLelement" /> to contain children elements.
+		///     Construct a <see cref="EBMLelement" /> to contain children elements.
 		/// </summary>
 		/// <param name="ebmlid">EBML ID of the element to be created.</param>
 		public EBMLelement(MatroskaID ebmlid)
@@ -49,7 +49,7 @@ namespace Sander.QuickList.TagLib.Matroska
 
 
 		/// <summary>
-		/// Construct a <see cref="EBMLelement" /> to contain data.
+		///     Construct a <see cref="EBMLelement" /> to contain data.
 		/// </summary>
 		/// <param name="ebmlid">EBML ID of the element to be created.</param>
 		/// <param name="data">EBML data of the element to be created.</param>
@@ -61,10 +61,10 @@ namespace Sander.QuickList.TagLib.Matroska
 
 
 		/// <summary>
-		/// Construct <see cref="EBMLelement" /> to contain data.
+		///     Construct <see cref="EBMLelement" /> to contain data.
 		/// </summary>
 		/// <param name="ebmlid">EBML ID of the element to be created.</param>
-		/// <param name="value">EBML data as an <see cref="ulong"/> value.</param>
+		/// <param name="value">EBML data as an <see cref="ulong" /> value.</param>
 		public EBMLelement(MatroskaID ebmlid, ulong value)
 		{
 			ID = ebmlid;
@@ -73,7 +73,7 @@ namespace Sander.QuickList.TagLib.Matroska
 
 
 		/// <summary>
-		/// EBML Element size in bytes.
+		///     EBML Element size in bytes.
 		/// </summary>
 		public long Size
 		{
@@ -85,7 +85,7 @@ namespace Sander.QuickList.TagLib.Matroska
 		}
 
 		/// <summary>
-		/// Get the size of the EBML ID, in bytes
+		///     Get the size of the EBML ID, in bytes
 		/// </summary>
 		public long IDSize
 		{
@@ -102,19 +102,21 @@ namespace Sander.QuickList.TagLib.Matroska
 				}
 
 				if (id_length == 0)
+				{
 					throw new CorruptFileException("invalid EBML ID (zero)");
+				}
 
 				return id_length;
 			}
 		}
 
 		/// <summary>
-		/// Get the size of the EBML data-size, in bytes
+		///     Get the size of the EBML data-size, in bytes
 		/// </summary>
 		public long DataSizeSize => EBMLByteSize((ulong)DataSize) + (IncSize ? 1 : 0);
 
 		/// <summary>
-		/// EBML Element data/content size in bytes.
+		///     EBML Element data/content size in bytes.
 		/// </summary>
 		public long DataSize
 		{
@@ -128,7 +130,9 @@ namespace Sander.QuickList.TagLib.Matroska
 					ret = Data.Count;
 
 					if (Children != null)
+					{
 						throw new UnsupportedFormatException("EBML element cannot contain both Data and Children");
+					}
 				}
 				else
 				{
@@ -144,7 +148,7 @@ namespace Sander.QuickList.TagLib.Matroska
 		}
 
 		/// <summary>
-		/// Get the EBML ID and data-size as a vector of bytes.
+		///     Get the EBML ID and data-size as a vector of bytes.
 		/// </summary>
 		public ByteVector Header
 		{
@@ -158,8 +162,7 @@ namespace Sander.QuickList.TagLib.Matroska
 				var vector = new ByteVector((int)(id_length + size_length));
 
 				// Construct the ID field
-				var ebml_id = (uint)ID;
-				var mask = ebml_id;
+				var mask = (uint)ID;
 				for (var i = (int)id_length - 1; i >= 0; i--)
 				{
 					vector[i] = (byte)(mask & 0xFF);
@@ -183,7 +186,7 @@ namespace Sander.QuickList.TagLib.Matroska
 
 
 		/// <summary>
-		/// Get the byte-size required to encode an EBML value with the leading 1.
+		///     Get the byte-size required to encode an EBML value with the leading 1.
 		/// </summary>
 		/// <param name="value">Encoded value</param>
 		/// <returns>size in bytes</returns>
@@ -212,7 +215,7 @@ namespace Sander.QuickList.TagLib.Matroska
 
 
 		/// <summary>
-		/// Try to increase the size of the EBML by 1 byte.
+		///     Try to increase the size of the EBML by 1 byte.
 		/// </summary>
 		/// <returns>True if successfully increased size, false if failed.</returns>
 		public bool IncrementSize()
@@ -228,7 +231,10 @@ namespace Sander.QuickList.TagLib.Matroska
 			{
 				foreach (var child in Children)
 				{
-					if (child.IncrementSize()) return true;
+					if (child.IncrementSize())
+					{
+						return true;
+					}
 				}
 			}
 
@@ -238,40 +244,54 @@ namespace Sander.QuickList.TagLib.Matroska
 
 
 		/// <summary>
-		/// Get a string from EBML Element's data section (UTF-8).
-		/// Handle null-termination.
+		///     Get a string from EBML Element's data section (UTF-8).
+		///     Handle null-termination.
 		/// </summary>
 		/// <returns>a string object containing the parsed value.</returns>
 		public string GetString()
 		{
-			if (Data == null) return null;
+			if (Data == null)
+			{
+				return null;
+			}
+
 			var idx = Data.IndexOf(0x00); // Detected Null termination
-			if (idx >= 0) return Data.ToString(StringType.UTF8, 0, idx);
+			if (idx >= 0)
+			{
+				return Data.ToString(StringType.UTF8, 0, idx);
+			}
+
 			return Data.ToString(StringType.UTF8);
 		}
 
 
 		/// <summary>
-		/// Get a boolean from EBML Element's data section.
+		///     Get a boolean from EBML Element's data section.
 		/// </summary>
 		/// <returns>a bool containing the parsed value.</returns>
 		public bool GetBool()
 		{
-			if (Data == null) return false;
+			if (Data == null)
+			{
+				return false;
+			}
+
 			return Data.ToUInt() > 0;
 		}
 
 
 		/// <summary>
-		/// Get a double from EBML Element's data section.
+		///     Get a double from EBML Element's data section.
 		/// </summary>
 		/// <returns>a double containing the parsed value.</returns>
 		public double GetDouble()
 		{
-			if (Data == null) return 0;
+			if (Data == null)
+			{
+				return 0;
+			}
 
-			var result = 0.0;
-
+			double result;
 			if (Data.Count == 4)
 			{
 				result = Data.ToFloat();
@@ -290,18 +310,22 @@ namespace Sander.QuickList.TagLib.Matroska
 
 
 		/// <summary>
-		/// Get an unsigned integer (any size from 1 to 8 bytes) from EBML Element's data section.
+		///     Get an unsigned integer (any size from 1 to 8 bytes) from EBML Element's data section.
 		/// </summary>
 		/// <returns>a ulong containing the parsed value.</returns>
 		public ulong GetULong()
 		{
-			if (Data == null) return 0;
+			if (Data == null)
+			{
+				return 0;
+			}
+
 			return Data.ToULong();
 		}
 
 
 		/// <summary>
-		/// Get a bytes vector from EBML Element's data section.
+		///     Get a bytes vector from EBML Element's data section.
 		/// </summary>
 		/// <returns>a <see cref="ByteVector" /> containing the parsed value.</returns>
 		public ByteVector GetBytes()
@@ -311,9 +335,9 @@ namespace Sander.QuickList.TagLib.Matroska
 
 
 		/// <summary>
-		/// Set data content as <see cref="string"/> to the EBML file
+		///     Set data content as <see cref="string" /> to the EBML file
 		/// </summary>
-		/// <param name="data">data as <see cref="string"/></param>
+		/// <param name="data">data as <see cref="string" /></param>
 		public void SetData(string data)
 		{
 			Data = data;
@@ -321,7 +345,7 @@ namespace Sander.QuickList.TagLib.Matroska
 
 
 		/// <summary>
-		///  Set data content as <see cref="ulong"/> to the EBML file
+		///     Set data content as <see cref="ulong" /> to the EBML file
 		/// </summary>
 		/// <param name="data">unsigned long number to write</param>
 		public void SetData(ulong data)

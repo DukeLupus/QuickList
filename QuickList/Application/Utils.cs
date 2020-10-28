@@ -7,7 +7,7 @@ namespace Sander.QuickList.Application
 	internal static class Utils
 	{
 		/// <summary>
-		/// Found from the internets, heavily modified for optimization and flexibility
+		///     Found from the internets, heavily modified for optimization and flexibility
 		/// </summary>
 		/// <param name="size">Size in bytes</param>
 		/// <param name="numberFormat">Format of the returned number. Defaults to 0.##</param>
@@ -58,8 +58,9 @@ namespace Sander.QuickList.Application
 			return FormattableString.Invariant($"{(readable / 1024).ToString(numberFormat, CultureInfo.InvariantCulture)}{suffix}");
 		}
 
+
 		/// <summary>
-		/// Return extension. Should be slightly faster than inbuilt method
+		///     Return extension. Should be slightly faster than inbuilt method
 		/// </summary>
 		/// <returns></returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -67,12 +68,16 @@ namespace Sander.QuickList.Application
 		{
 			var lastDot = filename.LastIndexOf(".", StringComparison.Ordinal);
 			if (lastDot == -1)
+			{
 				return null;
+			}
+
 			return filename.Substring(lastDot + 1);
 		}
 
+
 		/// <summary>
-		/// Return pathless filename. Should be faster than inbuilt method
+		///     Return pathless filename. Should be faster than inbuilt method
 		/// </summary>
 		/// <param name="fullname"></param>
 		/// <returns></returns>

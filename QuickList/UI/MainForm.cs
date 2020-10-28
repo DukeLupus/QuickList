@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Sander.QuickList.Application;
@@ -20,8 +19,6 @@ namespace Sander.QuickList.UI
 			_configuration = configuration;
 			InitializeComponent();
 		}
-
-
 
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -59,6 +56,7 @@ namespace Sander.QuickList.UI
 			DeleteMediaInfo.Enabled = File.Exists(_configuration.MediaCacheFile);
 		}
 
+
 		private void CurrentListLabel_Click(object sender, EventArgs e)
 		{
 			Process.Start(new ProcessStartInfo
@@ -73,15 +71,21 @@ namespace Sander.QuickList.UI
 		private void Disable(Control control)
 		{
 			if (control is Label || control.Name == "CurrentListPanel")
+			{
 				return;
+			}
 
 			if (control != this)
+			{
 				control.Enabled = false;
+			}
+
 			foreach (Control child in control.Controls)
 			{
 				Disable(child);
 			}
 		}
+
 
 		private void GenerateListButton_Click(object sender, EventArgs e)
 		{
@@ -95,7 +99,9 @@ namespace Sander.QuickList.UI
 
 
 			if (DeleteMediaInfo.Checked)
+			{
 				File.Delete(_configuration.MediaCacheFile);
+			}
 
 			_configuration.Update();
 
@@ -105,6 +111,7 @@ namespace Sander.QuickList.UI
 			var main = new Runner(_configuration);
 			Task.Run(() => main.MakeList());
 		}
+
 
 		private void ProjectLabel_Click(object sender, EventArgs e)
 		{
@@ -116,6 +123,7 @@ namespace Sander.QuickList.UI
 			});
 		}
 
+
 		private void ReportError_Click(object sender, EventArgs e)
 		{
 			Process.Start(new ProcessStartInfo
@@ -125,7 +133,6 @@ namespace Sander.QuickList.UI
 				Verb = "open"
 			});
 		}
-
 
 
 		private void callbackTimer_Tick(object sender, EventArgs e)
@@ -139,7 +146,6 @@ namespace Sander.QuickList.UI
 
 		private void UpdateStatus()
 		{
-
 			if (_configuration.Status.IsTerminating)
 			{
 				callbackTimer.Stop();
@@ -156,7 +162,6 @@ namespace Sander.QuickList.UI
 
 			progressBar.Value = (int)_configuration.Status.Percentage;
 			statusLabel.Text = _configuration.Status.Text;
-
 		}
 	}
 }

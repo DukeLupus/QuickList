@@ -3,37 +3,39 @@ using System;
 namespace Sander.QuickList.TagLib.Mpeg4.Boxes
 {
 	/// <summary>
-	///    This class extends <see cref="Box" /> to provide an
-	///    implementation of an Apple AdditionalInfoBox.
+	///     This class extends <see cref="Box" /> to provide an
+	///     implementation of an Apple AdditionalInfoBox.
 	/// </summary>
 	public class AppleAdditionalInfoBox : Box
 	{
 		/// <summary>
-		///    Contains the box data.
+		///     Contains the box data.
 		/// </summary>
 		private ByteVector data;
 
 
 		/// <summary>
-		///    Constructs and initializes a new instance of <see
-		///    cref="AppleAdditionalInfoBox" /> with a provided header
-		///    and handler by reading the contents from a specified
-		///    file.
+		///     Constructs and initializes a new instance of
+		///     <see
+		///         cref="AppleAdditionalInfoBox" />
+		///     with a provided header
+		///     and handler by reading the contents from a specified
+		///     file.
 		/// </summary>
 		/// <param name="header">
-		///    A <see cref="BoxHeader" /> object containing the header
-		///    to use for the new instance.
+		///     A <see cref="BoxHeader" /> object containing the header
+		///     to use for the new instance.
 		/// </param>
 		/// <param name="file">
-		///    A <see cref="TagLib.File" /> object to read the contents
-		///    of the box from.
+		///     A <see cref="TagLib.File" /> object to read the contents
+		///     of the box from.
 		/// </param>
 		/// <param name="handler">
-		///    A <see cref="IsoHandlerBox" /> object containing the
-		///    handler that applies to the new instance.
+		///     A <see cref="IsoHandlerBox" /> object containing the
+		///     handler that applies to the new instance.
 		/// </param>
 		/// <exception cref="ArgumentNullException">
-		///    <paramref name="file" /> is <see langword="null" />.
+		///     <paramref name="file" /> is <see langword="null" />.
 		/// </exception>
 		public AppleAdditionalInfoBox(BoxHeader header, TagLib.File file, IsoHandlerBox handler) : base(header, handler)
 		{
@@ -44,8 +46,10 @@ namespace Sander.QuickList.TagLib.Mpeg4.Boxes
 
 
 		/// <summary>
-		/// Constructs and initializes a new instance of <see
-		///    cref="AppleAdditionalInfoBox" /> using specified header, version and flags
+		///     Constructs and initializes a new instance of
+		///     <see
+		///         cref="AppleAdditionalInfoBox" />
+		///     using specified header, version and flags
 		/// </summary>
 		/// <param name="header">defines the header data</param>
 		public AppleAdditionalInfoBox(ByteVector header) : base(header)
@@ -54,29 +58,29 @@ namespace Sander.QuickList.TagLib.Mpeg4.Boxes
 
 
 		/// <summary>
-		///    Gets and sets the data contained in the current instance.
+		///     Gets and sets the data contained in the current instance.
 		/// </summary>
 		/// <value>
-		///    A <see cref="ByteVector" /> object containing the data
-		///    contained in the current instance.
+		///     A <see cref="ByteVector" /> object containing the data
+		///     contained in the current instance.
 		/// </value>
 		public override ByteVector Data
 		{
 			get => data;
-			set => data = value != null ? value : new ByteVector();
+			set => data = value ?? new ByteVector();
 		}
 
 		/// <summary>
-		///    Gets and sets the text contained in the current instance.
+		///     Gets and sets the text contained in the current instance.
 		/// </summary>
 		/// <value>
-		///    A <see cref="string" /> object containing the text
-		///    contained in the current instance.
+		///     A <see cref="string" /> object containing the text
+		///     contained in the current instance.
 		/// </value>
 		public string Text
 		{
 			get => Data.ToString(StringType.Latin1)
-			           .TrimStart('\0');
+				.TrimStart('\0');
 			set => Data = ByteVector.FromString(value,
 				StringType.Latin1);
 		}

@@ -15,7 +15,6 @@ namespace Sander.QuickList.Application
 {
 	internal sealed class FileReader
 	{
-
 		private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
 		private readonly Configuration _configuration;
 
@@ -89,13 +88,18 @@ namespace Sander.QuickList.Application
 			}
 
 			if (_configuration.ExcludedFilenames?.Count > 0)
+			{
 				ExcludeByName(fileList);
+			}
 
 			if (_configuration.ExcludedExtensions?.Count > 0)
+			{
 				ExcludeByExtension(fileList);
+			}
 
 			return fileList;
 		}
+
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ExcludeByName(List<Entry> fileList)
@@ -106,11 +110,14 @@ namespace Sander.QuickList.Application
 			}
 		}
 
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ExcludeByExtension(List<Entry> fileList)
 		{
 			foreach (var extension in _configuration.ExcludedExtensions)
+			{
 				fileList.RemoveAll(x => string.Compare(Utils.GetExtension(x.Fullname), extension, StringComparison.OrdinalIgnoreCase) == 0);
+			}
 		}
 
 
@@ -122,7 +129,6 @@ namespace Sander.QuickList.Application
 		private static extern bool FindClose(IntPtr hFindFile);
 
 
-
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
 		private static extern IntPtr FindFirstFileEx(
 			string lpFileName,
@@ -132,15 +138,6 @@ namespace Sander.QuickList.Application
 			IntPtr lpSearchFilter,
 			int dwAdditionalFlags);
 
-		private enum FINDEX_INFO_LEVELS
-		{
-			FindExInfoBasic = 1
-		}
-		private enum FINDEX_SEARCH_OPS
-		{
-			FindExSearchNameMatch = 0
-		}
-
 
 		private static bool FindNextFile(string path, out List<Entry> files)
 		{
@@ -149,27 +146,33 @@ namespace Sander.QuickList.Application
 
 			try
 			{
-				findHandle = FindFirstFileEx(string.Concat(path, "\\*"), FINDEX_INFO_LEVELS.FindExInfoBasic, out var findData, FINDEX_SEARCH_OPS.FindExSearchNameMatch, IntPtr.Zero, 2);
+				findHandle = FindFirstFileEx(string.Concat(path, "\\*"), FINDEX_INFO_LEVELS.FindExInfoBasic, out var findData,
+					FINDEX_SEARCH_OPS.FindExSearchNameMatch, IntPtr.Zero, 2);
+
 				if (findHandle != INVALID_HANDLE_VALUE)
 				{
 					do
 					{
 						// Skip current directory and parent directory symbols that are returned.
 						if (!findData.cFileName.Equals(".", StringComparison.OrdinalIgnoreCase) && !findData.cFileName.Equals("..",
-								StringComparison.OrdinalIgnoreCase))
+							StringComparison.OrdinalIgnoreCase))
 						{
 							var fullPath = string.Concat(path, "\\", findData.cFileName);
 							// Check if this is a directory and not a symbolic link since symbolic links could lead to repeated files and folders as well as infinite loops.
-							if (findData.dwFileAttributes.HasFlag(FileAttributes.Directory) && !findData.dwFileAttributes.HasFlag(FileAttributes.ReparsePoint))
+							if ((findData.dwFileAttributes & FileAttributes.Directory) != 0 && (findData.dwFileAttributes & FileAttributes.ReparsePoint) == 0)
 							{
 								if (FindNextFile(fullPath, out var subDirectoryFileList))
 								{
 									fileList.AddRange(subDirectoryFileList);
 								}
 							}
-							else if (!findData.dwFileAttributes.HasFlag(FileAttributes.Directory))
+							else if ((findData.dwFileAttributes & FileAttributes.Directory) == 0)
 							{
-								fileList.Add(new Entry { Fullname = fullPath, Size = (long)findData.nFileSizeHigh << 0x20 | findData.nFileSizeLow });
+								fileList.Add(new Entry
+								{
+									Fullname = fullPath,
+									Size = ((long)findData.nFileSizeHigh << 0x20) | findData.nFileSizeLow
+								});
 							}
 						}
 					} while (FindNextFile(findHandle, out findData));
@@ -178,12 +181,20 @@ namespace Sander.QuickList.Application
 			catch (Exception exception)
 			{
 				Trace.TraceError("Exception while trying to enumerate a directory. {0}", exception);
-				if (findHandle != INVALID_HANDLE_VALUE) FindClose(findHandle);
+				if (findHandle != INVALID_HANDLE_VALUE)
+				{
+					FindClose(findHandle);
+				}
+
 				files = null;
 				return false;
 			}
 
-			if (findHandle != INVALID_HANDLE_VALUE) FindClose(findHandle);
+			if (findHandle != INVALID_HANDLE_VALUE)
+			{
+				FindClose(findHandle);
+			}
+
 			files = fileList;
 			return true;
 		}
@@ -198,24 +209,30 @@ namespace Sander.QuickList.Application
 			try
 			{
 				path = path[path.Length - 1] == '\\' ? path : FormattableString.Invariant($@"{path}\");
-				findHandle = FindFirstFileEx(string.Concat(path, "*"), FINDEX_INFO_LEVELS.FindExInfoBasic, out var findData, FINDEX_SEARCH_OPS.FindExSearchNameMatch, IntPtr.Zero, 2);
+				findHandle = FindFirstFileEx(string.Concat(path, "*"), FINDEX_INFO_LEVELS.FindExInfoBasic, out var findData,
+					FINDEX_SEARCH_OPS.FindExSearchNameMatch, IntPtr.Zero, 2);
+
 				if (findHandle != INVALID_HANDLE_VALUE)
 				{
 					do
 					{
 						// Skip current directory and parent directory symbols that are returned.
 						if (!findData.cFileName.Equals(".", StringComparison.OrdinalIgnoreCase) && !findData.cFileName.Equals("..",
-								StringComparison.OrdinalIgnoreCase))
+							StringComparison.OrdinalIgnoreCase))
 						{
 							var fullPath = path + findData.cFileName;
 							// Check if this is a directory and not a symbolic link since symbolic links could lead to repeated files and folders as well as infinite loops.
-							if (findData.dwFileAttributes.HasFlag(FileAttributes.Directory) && !findData.dwFileAttributes.HasFlag(FileAttributes.ReparsePoint))
+							if ((findData.dwFileAttributes & FileAttributes.Directory) != 0 && (findData.dwFileAttributes & FileAttributes.ReparsePoint) == 0)
 							{
 								directoryList.Add(fullPath);
 							}
-							else if (!findData.dwFileAttributes.HasFlag(FileAttributes.Directory))
+							else if ((findData.dwFileAttributes & FileAttributes.Directory) == 0)
 							{
-								fileList.Add(new Entry { Fullname = fullPath, Size = (long)findData.nFileSizeHigh << 0x20 | findData.nFileSizeLow });
+								fileList.Add(new Entry
+								{
+									Fullname = fullPath,
+									Size = ((long)findData.nFileSizeHigh << 0x20) | findData.nFileSizeLow
+								});
 							}
 						}
 					} while (FindNextFile(findHandle, out findData));
@@ -225,27 +242,45 @@ namespace Sander.QuickList.Application
 						.WithDegreeOfParallelism(_configuration.FileReaderParallelism)
 						.WithExecutionMode(ParallelExecutionMode.ForceParallelism)
 						.ForAll(x =>
+						{
+							if (FindNextFile(x, out var subDirectoryFileList))
+							{
+								foreach (var entry in subDirectoryFileList)
 								{
-									if (FindNextFile(x, out var subDirectoryFileList))
-									{
-										foreach (var entry in subDirectoryFileList)
-										{
-											fileList.Add(entry);
-										}
-									}
-								});
+									fileList.Add(entry);
+								}
+							}
+						});
 				}
 			}
 			catch (Exception exception)
 			{
 				Trace.TraceError($"Caught exception while trying to enumerate a directory. {exception}");
-				if (findHandle != INVALID_HANDLE_VALUE) FindClose(findHandle);
+				if (findHandle != INVALID_HANDLE_VALUE)
+				{
+					FindClose(findHandle);
+				}
+
 				return fileList.ToList();
 			}
 
-			if (findHandle != INVALID_HANDLE_VALUE) FindClose(findHandle);
+			if (findHandle != INVALID_HANDLE_VALUE)
+			{
+				FindClose(findHandle);
+			}
 
 			return fileList.ToList();
+		}
+
+
+		private enum FINDEX_INFO_LEVELS
+		{
+			FindExInfoBasic = 1
+		}
+
+		private enum FINDEX_SEARCH_OPS
+		{
+			FindExSearchNameMatch = 0
 		}
 
 
@@ -260,8 +295,10 @@ namespace Sander.QuickList.Application
 			internal readonly uint nFileSizeLow;
 			internal readonly int dwReserved0;
 			internal readonly int dwReserved1;
+
 			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
 			internal readonly string cFileName;
+
 			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
 			internal readonly string cAlternateFileName;
 		}
