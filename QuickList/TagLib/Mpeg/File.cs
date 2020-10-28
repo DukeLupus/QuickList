@@ -18,14 +18,19 @@ namespace Sander.QuickList.TagLib.Mpeg
 		Zero = 0,
 
 		/// <summary>
-		///     A marker indicating a system sync packet.
-		/// </summary>
-		SystemSyncPacket = 0xBA,
-
-		/// <summary>
 		///     A marker indicating a video sync packet.
 		/// </summary>
 		VideoSyncPacket = 0xB3,
+
+		/// <summary>
+		///     A marker indicating the end of a stream.
+		/// </summary>
+		EndOfStream = 0xB9,
+
+		/// <summary>
+		///     A marker indicating a system sync packet.
+		/// </summary>
+		SystemSyncPacket = 0xBA,
 
 		/// <summary>
 		///     A marker indicating a system packet.
@@ -45,12 +50,7 @@ namespace Sander.QuickList.TagLib.Mpeg
 		/// <summary>
 		///     A marker indicating a video packet.
 		/// </summary>
-		VideoPacket = 0xE0,
-
-		/// <summary>
-		///     A marker indicating the end of a stream.
-		/// </summary>
-		EndOfStream = 0xB9
+		VideoPacket = 0xE0
 	}
 
 	/// <summary>
@@ -66,7 +66,7 @@ namespace Sander.QuickList.TagLib.Mpeg
 	///     file that doesn't contain one. This change does not effect the
 	///     file until it is saved and can be reversed using the following
 	///     method:
-	///     <code>file.RemoveTags (file.TagTypes &amp; ~file.TagTypesOnDisk);</code>
+	///     <c>file.RemoveTags (file.TagTypes &amp; ~file.TagTypesOnDisk);</c>
 	/// </remarks>
 	[SupportedMimeType("taglib/mpg", "mpg")]
 	[SupportedMimeType("taglib/mpeg", "mpeg")]

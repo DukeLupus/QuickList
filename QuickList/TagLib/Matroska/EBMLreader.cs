@@ -258,12 +258,8 @@ namespace Sander.QuickList.TagLib.Matroska
 
 				return true;
 			}
-			catch (Exception)
+			catch (Exception) when (!throwException)
 			{
-				if (throwException)
-				{
-					throw;
-				}
 
 				return false;
 			}

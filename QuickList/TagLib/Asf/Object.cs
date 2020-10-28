@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Sander.QuickList.TagLib.Asf
 {
@@ -117,7 +117,7 @@ namespace Sander.QuickList.TagLib.Asf
 		protected ByteVector Render(ByteVector data)
 		{
 			var length = (ulong)
-				((data != null ? data.Count : 0) + 24);
+				(((data?.Count) ?? 0) + 24);
 
 			ByteVector v = Guid.ToByteArray();
 			v.Add(RenderQWord(length));

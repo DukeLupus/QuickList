@@ -12,7 +12,7 @@ namespace Sander.QuickList.TagLib.Ape
 	///     any file that doesn't contain one. This change does not effect
 	///     the physical file until <see cref="TagLib.File.Save" /> is called and can be
 	///     reversed using the following method:
-	///     <code>file.RemoveTags (file.TagTypes &amp; ~file.TagTypesOnDisk);</code>
+	///     <c>file.RemoveTags (file.TagTypes &amp; ~file.TagTypesOnDisk);</c>
 	/// </remarks>
 	[SupportedMimeType("taglib/ape", "ape")]
 	public sealed class File : NonContainer.File

@@ -390,7 +390,7 @@ namespace Sander.QuickList.TagLib
 
 
 		/// <summary>
-		///     Gets an enumerator for enumerating through the the bytes
+		///     Gets an enumerator for enumerating through the bytes
 		///     in the current instance.
 		/// </summary>
 		/// <returns>
@@ -2003,8 +2003,8 @@ namespace Sander.QuickList.TagLib
 		public static bool operator ==(ByteVector first,
 			ByteVector second)
 		{
-			var fnull = (object)first == null;
-			var snull = (object)second == null;
+			var fnull = first is null;
+			var snull = second is null;
 			if (fnull && snull)
 			{
 				return true;
@@ -2589,7 +2589,7 @@ namespace Sander.QuickList.TagLib
 				data.Add(new byte[] { 0xff, 0xfe });
 			}
 
-			if (text == null || text.Length == 0)
+			if (string.IsNullOrEmpty(text))
 			{
 				return data;
 			}
@@ -2684,7 +2684,7 @@ namespace Sander.QuickList.TagLib
 		/// </exception>
 		public static ByteVector FromPath(string path)
 		{
-			return FromPath(path, out var tmp_out, false);
+			return FromPath(path, out _, false);
 		}
 
 
@@ -2746,7 +2746,7 @@ namespace Sander.QuickList.TagLib
 		public static ByteVector FromFile(File.IFileAbstraction
 			abstraction)
 		{
-			return FromFile(abstraction, out var tmp_out, false);
+			return FromFile(abstraction, out _, false);
 		}
 
 
@@ -2812,7 +2812,7 @@ namespace Sander.QuickList.TagLib
 		/// </exception>
 		public static ByteVector FromStream(Stream stream)
 		{
-			return FromStream(stream, out var tmp_out, false);
+			return FromStream(stream, out _, false);
 		}
 
 

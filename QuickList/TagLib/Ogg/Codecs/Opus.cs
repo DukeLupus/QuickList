@@ -18,7 +18,7 @@ namespace Sander.QuickList.TagLib.Ogg.Codecs
 
 		private static readonly ByteVector magic_signature_header = "OpusHead";
 		private static readonly ByteVector magic_signature_comment = "OpusTags";
-		private static readonly int magic_signature_length = 8;
+		private const int magic_signature_length = 8;
 
 		/// <summary>
 		///     Contains the comment data.

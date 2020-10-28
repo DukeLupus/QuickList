@@ -135,7 +135,7 @@ namespace Sander.QuickList.UI
 		}
 
 
-		private void callbackTimer_Tick(object sender, EventArgs e)
+		private void CallbackTimer_Tick(object sender, EventArgs e)
 		{
 			if (_configuration.Status != null)
 			{
@@ -152,7 +152,7 @@ namespace Sander.QuickList.UI
 				progressBar.Value = 100;
 				statusLabel.Text = "Finished";
 				callbackTimer.Interval = 1000;
-				callbackTimer.Tick -= callbackTimer_Tick;
+				callbackTimer.Tick -= CallbackTimer_Tick;
 				callbackTimer.Tick += (sender, args) => Close();
 				callbackTimer.Start();
 				return;

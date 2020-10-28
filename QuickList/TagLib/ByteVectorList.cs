@@ -160,7 +160,7 @@ namespace Sander.QuickList.TagLib
 		/// <param name="max">
 		///     A <see cref="int" /> value specifying the maximum number
 		///     of objects to return, or zero to not to limit the number.
-		///     If that that number is reached, the last value will
+		///     If that number is reached, the last value will
 		///     contain the remainder of the file even if it contains
 		///     more instances of <paramref name="pattern" />.
 		/// </param>

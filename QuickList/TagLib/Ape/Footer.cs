@@ -9,14 +9,14 @@ namespace Sander.QuickList.TagLib.Ape
 	public enum FooterFlags : uint
 	{
 		/// <summary>
-		///     The tag lacks a footer object.
-		/// </summary>
-		FooterAbsent = 0x40000000,
-
-		/// <summary>
 		///     The footer is actually a header.
 		/// </summary>
 		IsHeader = 0x20000000,
+
+		/// <summary>
+		///     The tag lacks a footer object.
+		/// </summary>
+		FooterAbsent = 0x40000000,
 
 		/// <summary>
 		///     The tag contains a header.

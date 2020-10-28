@@ -14,7 +14,7 @@ namespace Sander.QuickList.TagLib.Aac
 	///     file that doesn't contain one. This change does not effect the
 	///     file until it is saved and can be reversed using the following
 	///     method:
-	///     <code>file.RemoveTags (file.TagTypes &amp; ~file.TagTypesOnDisk);</code>
+	///     <c>file.RemoveTags (file.TagTypes &amp; ~file.TagTypesOnDisk);</c>
 	/// </remarks>
 	[SupportedMimeType("taglib/aac", "aac")]
 	public sealed class File : NonContainer.File

@@ -290,22 +290,16 @@ namespace Sander.QuickList.TagLib.Matroska
 			{
 				return 0;
 			}
-
-			double result;
 			if (Data.Count == 4)
 			{
-				result = Data.ToFloat();
-			}
-			else if (Data.Count == 8)
-			{
-				result = Data.ToDouble();
-			}
-			else
-			{
-				throw new UnsupportedFormatException("Can not read a Double with sizes differing from 4 or 8");
+				return Data.ToFloat();
 			}
 
-			return result;
+			if (Data.Count == 8)
+			{
+				return Data.ToDouble();
+			}
+			throw new UnsupportedFormatException("Can not read a Double with sizes differing from 4 or 8");
 		}
 
 

@@ -106,7 +106,7 @@ namespace Sander.QuickList.Application
 		{
 			foreach (var filename in _configuration.ExcludedFilenames)
 			{
-				fileList.RemoveAll(x => string.Compare(Utils.GetFilename(x.Fullname), filename, StringComparison.OrdinalIgnoreCase) == 0);
+				fileList.RemoveAll(x => string.Equals(Utils.GetFilename(x.Fullname), filename, StringComparison.OrdinalIgnoreCase));
 			}
 		}
 
@@ -116,7 +116,7 @@ namespace Sander.QuickList.Application
 		{
 			foreach (var extension in _configuration.ExcludedExtensions)
 			{
-				fileList.RemoveAll(x => string.Compare(Utils.GetExtension(x.Fullname), extension, StringComparison.OrdinalIgnoreCase) == 0);
+				fileList.RemoveAll(x => string.Equals(Utils.GetExtension(x.Fullname), extension, StringComparison.OrdinalIgnoreCase));
 			}
 		}
 

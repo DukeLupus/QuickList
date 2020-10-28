@@ -8,9 +8,6 @@ namespace Sander.QuickList.Application
 	/// </summary>
 	internal sealed class IniReader
 	{
-		private static readonly int _capacity = 1024;
-
-
 		[DllImport("kernel32", CharSet = CharSet.Unicode)]
 		private static extern int GetPrivateProfileString(string section, string key,
 			string defaultValue, StringBuilder value, int size, string filePath);
@@ -24,7 +21,7 @@ namespace Sander.QuickList.Application
 
 		internal static string ReadValue(string section, string key, string filePath, string defaultValue = "")
 		{
-			var value = new StringBuilder(_capacity);
+			var value = new StringBuilder(1024);
 			GetPrivateProfileString(section, key, defaultValue, value, value.Capacity, filePath);
 			return value.ToString();
 		}

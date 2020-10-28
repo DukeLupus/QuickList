@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Sander.QuickList.TagLib.Mpeg4.Boxes
 {
@@ -102,20 +102,15 @@ namespace Sander.QuickList.TagLib.Mpeg4.Boxes
 		///     rendered version of the data contained in the current
 		///     instance.
 		/// </value>
-		public override ByteVector Data
-		{
-			get
+		public override ByteVector Data =>
+			new ByteVector(4)
 			{
-				return new ByteVector(4)
-				{
-					HandlerType,
-					new ByteVector(12),
-					ByteVector.FromString(Name,
-						StringType.UTF8),
-					new ByteVector(2)
-				};
-			}
-		}
+				HandlerType,
+				new ByteVector(12),
+				ByteVector.FromString(Name,
+					StringType.UTF8),
+				new ByteVector(2)
+			};
 
 		/// <summary>
 		///     Gets the handler type of the current instance.

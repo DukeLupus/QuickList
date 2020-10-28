@@ -198,11 +198,7 @@ namespace Sander.QuickList.TagLib.Ape
 			Key = key;
 			Type = ItemType.Binary;
 
-			data = value as ReadOnlyByteVector;
-			if (data == null)
-			{
-				data = new ReadOnlyByteVector(value);
-			}
+			data = value as ReadOnlyByteVector ?? new ReadOnlyByteVector(value);
 		}
 
 
@@ -298,7 +294,7 @@ namespace Sander.QuickList.TagLib.Ape
 					return text == null || text.Length == 0;
 				}
 
-				return data == null || data.IsEmpty;
+				return data?.IsEmpty != false;
 			}
 		}
 

@@ -128,7 +128,7 @@ namespace Sander.QuickList.TagLib.Ogg
 		[Obsolete("Use Paginator.Paginate(out int)")]
 		public Page[] Paginate()
 		{
-			return Paginate(out var dummy);
+			return Paginate(out _);
 		}
 
 

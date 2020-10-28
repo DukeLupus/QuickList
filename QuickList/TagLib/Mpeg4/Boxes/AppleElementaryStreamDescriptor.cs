@@ -219,7 +219,7 @@ namespace Sander.QuickList.TagLib.Mpeg4.Boxes
 
 		/// <summary>
 		///     Reads a section length and updates the offset to the end
-		///     of of the length block.
+		///     of the length block.
 		/// </summary>
 		/// <param name="data">
 		///     A <see cref="ByteVector" /> object to read from.

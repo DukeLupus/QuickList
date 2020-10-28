@@ -324,7 +324,7 @@ namespace Sander.QuickList.TagLib.Mpeg4
 		/// </param>
 		/// <returns>
 		///     The size change encountered by the box that parents the
-		///     box described the the current instance, equal to the
+		///     box described the current instance, equal to the
 		///     size change of the box plus any size change that should
 		///     happen in the header.
 		/// </returns>

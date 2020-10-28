@@ -315,7 +315,9 @@ namespace Sander.QuickList.TagLib.Riff
 				// contains tags.
 				if (tag_found)
 				{
+#pragma warning disable CS0162 // Unreachable code detected
 					if (tag_start == -1)
+#pragma warning restore CS0162 // Unreachable code detected
 					{
 						tag_start = position;
 						tag_end = position + 8 + size;

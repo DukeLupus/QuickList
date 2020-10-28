@@ -36,7 +36,7 @@ namespace Sander.QuickList.TagLib
 	/// <remarks>
 	///     <para>
 	///         This class is agnostic to all specific media types. Its
-	///         child classes, on the other hand, support the the intricacies of
+	///         child classes, on the other hand, support the intricacies of
 	///         different media and tagging formats. For example,
 	///         <see
 	///             cref="Mpeg4.File" />
@@ -82,7 +82,7 @@ namespace Sander.QuickList.TagLib
 		/// <summary>
 		///     Contains buffer size to use when reading.
 		/// </summary>
-		private static readonly int buffer_size = 1024;
+		private const int buffer_size = 1024;
 
 		private static readonly Dictionary<Type, TagFileConstructor<File>> TagFileConstructors = new Dictionary<Type, TagFileConstructor<File>>();
 
@@ -331,12 +331,7 @@ namespace Sander.QuickList.TagLib
 		/// </param>
 		internal void MarkAsCorrupt(string reason)
 		{
-			if (_corruptionReasons == null)
-			{
-				_corruptionReasons = new List<string>();
-			}
-
-			_corruptionReasons.Add(reason);
+			(_corruptionReasons ?? (_corruptionReasons = new List<string>())).Add(reason);
 		}
 
 

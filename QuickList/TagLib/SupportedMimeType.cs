@@ -24,7 +24,7 @@ namespace Sander.QuickList.TagLib
 		static SupportedMimeType()
 		{
 			//to init the static file
-			var init = FileTypes.AvailableTypes.Count == 1;
+			_ = FileTypes.AvailableTypes.Count == 1;
 		}
 
 
@@ -49,10 +49,10 @@ namespace Sander.QuickList.TagLib
 		///         <see cref="SupportedMimeType(string,string)" /> strictly
 		///         to register extensions, using "taglib/ext" for the mime
 		///         type. Eg.
-		///         <c>
+		///         <code>
 		///             SupportedMimeType("taglib/mp3",
 		///             "mp3")
-		///         </c>
+		///         </code>
 		///         .
 		///     </para>
 		/// </remarks>
@@ -88,10 +88,10 @@ namespace Sander.QuickList.TagLib
 		///         <see cref="SupportedMimeType(string,string)" /> strictly
 		///         to register extensions, using "taglib/ext" for the mime
 		///         type. Eg.
-		///         <c>
+		///         <code>
 		///             SupportedMimeType("taglib/mp3",
 		///             "mp3")
-		///         </c>
+		///         </code>
 		///         .
 		///     </para>
 		/// </remarks>

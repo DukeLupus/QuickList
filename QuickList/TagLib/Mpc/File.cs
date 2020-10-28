@@ -10,7 +10,7 @@ namespace Sander.QuickList.TagLib.Mpc
 	///     A <see cref="TagLib.Ape.Tag" /> will be added automatically to
 	///     any file that doesn't contain one. This change does not effect
 	///     the file and can be reversed using the following method:
-	///     <code>file.RemoveTags (file.TagTypes &amp; ~file.TagTypesOnDisk);</code>
+	///     <c>file.RemoveTags (file.TagTypes &amp; ~file.TagTypesOnDisk);</c>
 	/// </remarks>
 	[SupportedMimeType("taglib/mpc", "mpc")]
 	[SupportedMimeType("taglib/mp+", "mp+")]

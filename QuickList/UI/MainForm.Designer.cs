@@ -291,7 +291,7 @@ namespace Sander.QuickList.UI
 			// callbackTimer
 			// 
 			this.callbackTimer.Interval = 250;
-			this.callbackTimer.Tick += new System.EventHandler(this.callbackTimer_Tick);
+			this.callbackTimer.Tick += new System.EventHandler(this.CallbackTimer_Tick);
 			// 
 			// MainForm
 			// 

@@ -210,7 +210,7 @@ namespace Sander.QuickList.TagLib.Matroska
 				{
 					element = new EBMLreader(this, offset);
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
 					// Sometimes, the file has zero padding at the end
 					if (hasSegment)
@@ -218,7 +218,7 @@ namespace Sander.QuickList.TagLib.Matroska
 						break; // Avoid crash
 					}
 
-					throw ex;
+					throw;
 				}
 
 				var ebml_id = (EBMLID)element.ID;
@@ -383,9 +383,7 @@ namespace Sander.QuickList.TagLib.Matroska
 				throw new Exception("Invalid Matroska file, missing data 0x1A.");
 			}
 
-			offset = offset + (ulong)idx - buffer_size;
-
-			return offset;
+			return offset + (ulong)idx - buffer_size;
 		}
 
 
@@ -609,18 +607,18 @@ namespace Sander.QuickList.TagLib.Matroska
 				{
 					case MatroskaID.FileName:
 #pragma warning disable 219 // Assigned, never read
-						var file_name = child.ReadString();
+						_ = child.ReadString();
 						break;
 					case MatroskaID.FileMimeType:
-						var file_mime = child.ReadString();
+						_ = child.ReadString();
 						break;
 					case MatroskaID.FileDescription:
-						var file_desc = child.ReadString();
+						_ = child.ReadString();
 						break;
 					case MatroskaID.FileData:
 						break;
 					case MatroskaID.FileUID:
-						var file_uid = child.ReadULong();
+						_ = child.ReadULong();
 						break;
 				}
 

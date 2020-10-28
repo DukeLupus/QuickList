@@ -14,7 +14,7 @@ namespace Sander.QuickList.TagLib.Flac
 	///     automatically to any file that doesn't contain one. This change
 	///     does not effect the physical file until <see cref="Save" /> is
 	///     called and can be reversed using the following method:
-	///     <code>file.RemoveTags (file.TagTypes &amp; ~file.TagTypesOnDisk);</code>
+	///     <c>file.RemoveTags (file.TagTypes &amp; ~file.TagTypesOnDisk);</c>
 	/// </remarks>
 	[SupportedMimeType("taglib/flac", "flac")]
 	[SupportedMimeType("taglib/fla", "fla")]

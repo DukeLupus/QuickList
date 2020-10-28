@@ -87,7 +87,7 @@ namespace Sander.QuickList.Application
 				HeaderFile = IniReader.ReadValue("ListMagic", "HeaderFile", iniFile),
 				Trigger = IniReader.ReadValue("ListMagic", "trigger", iniFile),
 				OutputFolder = IniReader.ReadValue("ListMagic", "ListLocation", iniFile),
-				ShowUi = string.Compare(IniReader.ReadValue("ListMagic", "Auto", iniFile, "Y").Trim(), "N", StringComparison.OrdinalIgnoreCase) == 0,
+				ShowUi = string.Equals(IniReader.ReadValue("ListMagic", "Auto", iniFile, "Y").Trim(), "N", StringComparison.OrdinalIgnoreCase),
 				ListName = Path.GetFileNameWithoutExtension(iniFile),
 				FileInfo = (FileInfoLevel)Enum.Parse(typeof(FileInfoLevel), IniReader.ReadValue("QuickList", "FileInfo", iniFile, nameof(FileInfoLevel.Size))),
 				FolderHandling = (FolderHandling)Enum.Parse(typeof(FolderHandling),

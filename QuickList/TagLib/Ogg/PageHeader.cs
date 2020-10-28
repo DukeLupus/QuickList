@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Sander.QuickList.TagLib.Ogg
@@ -52,11 +52,6 @@ namespace Sander.QuickList.TagLib.Ogg
 		/// </summary>
 		private readonly ulong absolute_granular_position;
 
-		/// <summary>
-		///     Contains the data size on disk.
-		/// </summary>
-		private readonly uint data_size;
-
 
 		/// <summary>
 		///     Constructs and initializes a new instance of
@@ -87,7 +82,7 @@ namespace Sander.QuickList.TagLib.Ogg
 			StreamSerialNumber = streamSerialNumber;
 			PageSequenceNumber = pageNumber;
 			Size = 0;
-			data_size = 0;
+			DataSize = 0;
 			packet_sizes = new List<int>();
 
 			if (pageNumber == 0 &&
@@ -185,11 +180,11 @@ namespace Sander.QuickList.TagLib.Ogg
 			packet_sizes = new List<int>();
 
 			var packet_size = 0;
-			data_size = 0;
+			DataSize = 0;
 
 			for (var i = 0; i < page_segment_count; i++)
 			{
-				data_size += page_segments[i];
+				DataSize += page_segments[i];
 				packet_size += page_segments[i];
 
 				if (page_segments[i] < 255)
@@ -239,7 +234,7 @@ namespace Sander.QuickList.TagLib.Ogg
 				original.PageSequenceNumber + offset;
 
 			Size = original.Size;
-			data_size = original.data_size;
+			DataSize = original.DataSize;
 			packet_sizes = new List<int>();
 
 			if (PageSequenceNumber == 0 &&
@@ -322,7 +317,7 @@ namespace Sander.QuickList.TagLib.Ogg
 		/// <value>
 		///     A <see cref="uint" /> value containing the data size.
 		/// </value>
-		public uint DataSize => data_size;
+		public uint DataSize { get; }
 
 
 		/// <summary>
@@ -417,7 +412,7 @@ namespace Sander.QuickList.TagLib.Ogg
 				             (int)absolute_granular_position ^
 				             StreamSerialNumber ^
 							 PageSequenceNumber ^ Size ^
-				             data_size);
+							 DataSize);
 			}
 		}
 
@@ -471,7 +466,7 @@ namespace Sander.QuickList.TagLib.Ogg
 				   PageSequenceNumber ==
 			       other.PageSequenceNumber &&
 			       Size == other.Size &&
-			       data_size == other.data_size;
+				   DataSize == other.DataSize;
 		}
 
 

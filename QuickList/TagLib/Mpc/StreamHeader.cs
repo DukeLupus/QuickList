@@ -189,7 +189,7 @@ namespace Sander.QuickList.TagLib.Mpc
 
 					var pos = 4;
 					Version = data[pos];
-					pos += 1;
+					pos++;
 					frames = (uint)ReadSize(data, ref pos);
 					if (pos > (uint)payloadSize - 3)
 					{
