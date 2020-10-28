@@ -87,37 +87,27 @@ namespace Sander.QuickList.Application
 				_configuration.Status = Status.Get("Gathering files", percentage);
 			}
 
+			//just one iteration needed if both are set
+			if (_configuration.ExcludedFilenames?.Count > 0 && _configuration.ExcludedExtensions?.Count > 0)
+			{
+				fileList.RemoveAll(x =>
+					_configuration.ExcludedExtensions.Contains(Utils.GetExtension(x.Fullname), StringComparer.OrdinalIgnoreCase)
+					|| _configuration.ExcludedFilenames.Contains(Utils.GetFilename(x.Fullname), StringComparer.OrdinalIgnoreCase));
+
+				return fileList;
+			}
+
 			if (_configuration.ExcludedFilenames?.Count > 0)
 			{
-				ExcludeByName(fileList);
+				fileList.RemoveAll(x => _configuration.ExcludedFilenames.Contains(Utils.GetFilename(x.Fullname), StringComparer.OrdinalIgnoreCase));
 			}
 
 			if (_configuration.ExcludedExtensions?.Count > 0)
 			{
-				ExcludeByExtension(fileList);
+				fileList.RemoveAll(x => _configuration.ExcludedExtensions.Contains(Utils.GetExtension(x.Fullname), StringComparer.OrdinalIgnoreCase));
 			}
 
 			return fileList;
-		}
-
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void ExcludeByName(List<Entry> fileList)
-		{
-			foreach (var filename in _configuration.ExcludedFilenames)
-			{
-				fileList.RemoveAll(x => string.Equals(Utils.GetFilename(x.Fullname), filename, StringComparison.OrdinalIgnoreCase));
-			}
-		}
-
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void ExcludeByExtension(List<Entry> fileList)
-		{
-			foreach (var extension in _configuration.ExcludedExtensions)
-			{
-				fileList.RemoveAll(x => string.Equals(Utils.GetExtension(x.Fullname), extension, StringComparison.OrdinalIgnoreCase));
-			}
 		}
 
 

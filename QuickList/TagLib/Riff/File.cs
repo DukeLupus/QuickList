@@ -199,8 +199,6 @@ namespace Sander.QuickList.TagLib.Riff
 			// Read until there are less than 8 bytes to read.
 			do
 			{
-				const bool tag_found = false;
-
 				Seek(position);
 				var fourcc = ReadBlock(4)
 					.ToString(StringType.UTF8);
@@ -313,21 +311,6 @@ namespace Sander.QuickList.TagLib.Riff
 
 				// Determine the region of the file that
 				// contains tags.
-				if (tag_found)
-				{
-#pragma warning disable CS0162 // Unreachable code detected
-					if (tag_start == -1)
-#pragma warning restore CS0162 // Unreachable code detected
-					{
-						tag_start = position;
-						tag_end = position + 8 + size;
-					}
-					else if (tag_end == position)
-					{
-						tag_end = position + 8 + size;
-					}
-				}
-
 				// Move to the next item.
 			} while ((position += 8L + size) + 8 < length);
 

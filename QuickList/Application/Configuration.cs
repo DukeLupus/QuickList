@@ -100,7 +100,10 @@ namespace Sander.QuickList.Application
 			if (!string.IsNullOrWhiteSpace(excludedExtensions))
 			{
 				configuration.ExcludedExtensions = excludedExtensions.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-					.Select(x => x.Trim().TrimStart('.').ToLowerInvariant())
+					.Select(x =>
+						x.Trim()
+						.TrimStart('.').ToLowerInvariant())
+					.OrderBy(x => x)
 					.ToList();
 			}
 
@@ -119,6 +122,7 @@ namespace Sander.QuickList.Application
 				configuration.ExcludedFilenames = excludedFilenames
 					.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries)
 					.Select(x => x.Trim())
+					.OrderBy(x => x)
 					.ToList();
 			}
 

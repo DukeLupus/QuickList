@@ -16,7 +16,7 @@ namespace Sander.QuickList
 		/// </summary>
 		private const string QuicklistLog = "QuickList.log";
 
-		internal const string Version = "3.0 beta 6";
+		internal const string Version = "3.0 beta 7";
 
 		private static string _traceName;
 
@@ -37,13 +37,13 @@ namespace Sander.QuickList
 			//not using mutex, as I have no idea what was the mutex name for QuickList v2
 			if (Process.GetProcessesByName("QuickList").Length > 1)
 			{
-				MessageBox.Show("Another instance of QuickList is already running", "QuickList", MessageBoxButtons.OK);
+				MessageBox.Show("Another instance of QuickList is already running", $"QuickList {Version}", MessageBoxButtons.OK);
 				Environment.Exit(1);
 			}
 #if !DEV
 			if (parameters.Length == 0)
 			{
-				MessageBox.Show("Commandline parameter pointing to ini file is missing!", "QuickList", MessageBoxButtons.OK);
+				MessageBox.Show("Commandline parameter pointing to ini file is missing!", $"QuickList {Version}", MessageBoxButtons.OK);
 				Environment.Exit(2);
 			}
 

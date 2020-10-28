@@ -62,17 +62,11 @@ namespace Sander.QuickList.Application
 		/// <summary>
 		///     Return extension. Should be slightly faster than inbuilt method
 		/// </summary>
-		/// <returns></returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static string GetExtension(string filename)
 		{
 			var lastDot = filename.LastIndexOf(".", StringComparison.Ordinal);
-			if (lastDot == -1)
-			{
-				return null;
-			}
-
-			return filename.Substring(lastDot + 1);
+			return lastDot == -1 ? null : filename.Substring(lastDot + 1);
 		}
 
 
@@ -80,7 +74,6 @@ namespace Sander.QuickList.Application
 		///     Return pathless filename. Should be faster than inbuilt method
 		/// </summary>
 		/// <param name="fullname"></param>
-		/// <returns></returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static string GetFilename(string fullname)
 		{
